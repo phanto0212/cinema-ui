@@ -4,8 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const Wrapper = styled(Row)`
 padding: 23px 120px;
-background-color: #0f172a;
+background-color: #050912;
 color: #fff;
+position: fixed;
+top: 0;
+width: 100%;
+z-index: 1000; /* Đảm bảo header nằm trên các phần tử khác */
 `;
 export const WrapperHeaderText = styled.span`
 font-size: 25px;
@@ -16,7 +20,7 @@ text-align: center;
 position : relative;
 margin-bottom:5px;
 cursor: pointer;
-color: #dac6fb;
+color: #fff;
 `;
 export const Container = styled.div`
   display: flex;
@@ -30,17 +34,17 @@ export const ContainerButton = styled.div`
   border-radius: 6px;
   padding: 3px 6px; /* Thêm padding để button dễ nhìn hơn */
   height: 40px;
-  width:130px;
+  width:150px;
   cursor: pointer;
-  margin-left:15px;
+  margin-right:20px;
 
   &:hover {
     background-color: #f0f0f0; /* Màu sắc nhẹ khi hover */
   }
 `;
 export const LinkButton = styled.a`
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   text-decoration: none;
   text-align: center; /* Căn giữa văn bản trong link */
   width:100%;
