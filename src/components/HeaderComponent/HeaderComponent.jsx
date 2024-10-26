@@ -12,11 +12,11 @@ function HeaderComponent() {
       <WrapperHeaderText>Nhom8's Cinema</WrapperHeaderText></Col>
       <Col span={11}>
         <Container>
-        <ContainerButton style={{backgroundColor: '#f8ee13'}}><LinkButton style={{color: '#333'}} ><Icon icon={faTicketAlt} size="1x" />Đặt vé</LinkButton></ContainerButton>
-        <ContainerButton style={{backgroundColor: '#639'}}><LinkButton style={{color: '#fff'}} ><Icon icon={faPizzaSlice} size="1x" /><span style={{color: '#F3EA28'}}>Chọn rạp</span></LinkButton></ContainerButton>
+        <ContainerButton style={{backgroundColor: '#ff7401'}} ><LinkButton style={{color: '#fff'}} ><Icon icon={faTicketAlt} size="1x" />Đặt vé</LinkButton></ContainerButton>
+        <ContainerButton style={{backgroundColor: '#ff7401'}} ><LinkButton style={{color: '#fff'}} ><Icon icon={faPizzaSlice} size="1x" />Chọn rạp</LinkButton></ContainerButton>
         <ContainerButton style={{backgroundColor: '#ff7401'}}><LinkButton style={{color: '#fff'}} ><Icon icon={faMapMarkerAlt } size="1x" />Lịch chiếu</LinkButton></ContainerButton>
         </Container> 
-        
+        {/* style={{backgroundColor: '#f8ee13'}} style={{color: '#333'}} */}
       </Col>
       <Col span={8} style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}} >
         <InputComponent />

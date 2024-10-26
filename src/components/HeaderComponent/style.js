@@ -26,31 +26,55 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
 `;
-
-export const ContainerButton = styled.div`
+export const LinkButton = styled.a`
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center; /* Đảm bảo nội dung được căn giữa */
-  border-radius: 6px;
-  padding: 3px 6px; /* Thêm padding để button dễ nhìn hơn */
-  height: 40px;
-  width:150px;
-  cursor: pointer;
-  margin-right:20px;
-
-  &:hover {
-    background-color: #f0f0f0; /* Màu sắc nhẹ khi hover */
-  }
-`;
-export const LinkButton = styled.a`
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
-  text-align: center; /* Căn giữa văn bản trong link */
-  width:100%;
-
- 
+  color: #333;
+  z-index: 1; /* Đảm bảo nội dung nằm trên lớp gradient */
 `;
+export const ContainerButton = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 3px 6px;
+  height: 40px;
+  width: 150px;
+  cursor: pointer;
+  margin-right: 20px;
+  overflow: hidden; /* Đảm bảo gradient không tràn ra ngoài */
+  background-color: #f8ee13;
+  
+  /* Lớp phủ gradient */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%; /* Bắt đầu gradient từ ngoài bên trái */
+    width: 200%; /* Chiều rộng gradient lớn hơn để đủ trượt qua */
+    height: 100%;
+    background: linear-gradient(90deg, purple, blue);
+    transition: left 0.5s ease; /* Chuyển động từ từ */
+    z-index: 0;
+  }
+
+  /* Khi hover, gradient trượt từ trái qua phải */
+  &:hover::after {
+    left: 0;
+  }
+
+  /* Màu chữ khi hover */
+  &:hover ${LinkButton} {
+    color: white;
+  }
+`;
+
+
 export const Icon = styled(FontAwesomeIcon)`
 margin-right: 6px;
 `
