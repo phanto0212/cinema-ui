@@ -4,5 +4,5 @@ import styled from "styled-components";
 export const SliderComponents  = styled(Slider)`
 
 position: relative;
-margin-top:90.5px;
+margin-top:91.5px;
 `;

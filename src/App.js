@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import { routes } from './routes'
 import DefaultComponent from './components/DefaultComponent/DefaultComponent'
+import MovieDetailPage from './pages/MovieDetailPage/MovieDetailPage'
 
 export function App() {
   
@@ -22,6 +23,7 @@ export function App() {
               )
             })
           }
+          <Route path="/movie/detail/:movieId" element={<MovieDetailPage />} />
         </Routes>
       </Router>
       

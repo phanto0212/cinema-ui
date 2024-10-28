@@ -10,10 +10,14 @@ import CardComponent from '../../components/CardComponent/CardComponent';
 
 function Hompage() {
   return (
-    <div style={{padding: '0 120px', backgroundColor: '#050912',height: '3000px' }}>
+    <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '3000px' }}>
       <SlideComponent arrImages = {[slide0, slide1, slide2, slide3, slide4]} />
       <TitleMovie>PHIM ĐANG CHIẾU</TitleMovie>
       <div style={{marginTop: '60px',  display: 'flex',flexWrap: 'wrap', alignItems: 'center', gap: '25px'}} >
+      <CardComponent></CardComponent>
+      <CardComponent></CardComponent>
+      <CardComponent></CardComponent>
+      <CardComponent></CardComponent>
       <CardComponent></CardComponent>
       <CardComponent></CardComponent>
       <CardComponent></CardComponent>

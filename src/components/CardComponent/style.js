@@ -1,6 +1,6 @@
 import { Card } from "antd";
 import styled from "styled-components";
-
+import { Modal } from "antd"; 
 export const { Meta } = Card;
 
 export const StyledCard = styled(Card)`
@@ -8,7 +8,8 @@ export const StyledCard = styled(Card)`
   overflow: hidden;
   border-radius: 8px;
   border:none;
-  background-color:#050912;
+  background-color:#0f172a;
+  // #050912
 //   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
    .ant-card-body {
@@ -20,6 +21,7 @@ export const StyledCard = styled(Card)`
     transition: transform 0.3s ease;
   }
 
+
   &:hover .ant-card-cover img {
     transform: scale(1.1);
   }
@@ -30,7 +32,7 @@ export const Overlay = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 77%;
+  height: 76%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -41,7 +43,7 @@ export const Overlay = styled.div`
   transition: opacity 0.3s ease;
   
   padding: 10px;
-  border-radius: 8px;
+  
   
   /* Hiển thị thông tin khi hover */
   ${StyledCard}:hover & {
@@ -147,5 +149,18 @@ export const ContainerButton = styled.div`
   /* Màu chữ khi hover */
   &:hover ${LinkButton} {
     color: white;
+  }
+`;
+
+export const ModalCustom = styled(Modal)`
+  & .ant-modal-content {
+    background-color: transparent !important; /* Đặt nền modal trong suốt */
+    box-shadow: none !important; /* Xóa bóng modal */
+    border: none !important; /* Xóa viền modal */
+    padding: 0;
+  }
+
+  & .ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.5) !important; /* Điều chỉnh độ trong suốt của overlay */
   }
 `;

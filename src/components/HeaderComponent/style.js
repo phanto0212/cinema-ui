@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const Wrapper = styled(Row)`
 padding: 23px 120px;
-background-color: #050912;
+background-color: #0f172a;
+border-bottom: 1px solid #292828;
 color: #fff;
 position: fixed;
 top: 0;

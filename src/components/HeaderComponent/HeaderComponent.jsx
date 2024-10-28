@@ -6,7 +6,7 @@ import { Container, ContainerButton, Icon, LinkButton, LoginAndSignup, User, Use
 import InputComponent from '../InputComponent/InputComponent';
 function HeaderComponent() {
   return (
-    <div>
+    <div >
     <Wrapper>
       <Col span={5}>
       <WrapperHeaderText>Nhom8's Cinema</WrapperHeaderText></Col>
