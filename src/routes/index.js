@@ -1,5 +1,6 @@
 import Hompage from "../pages/HomePage/Hompage";
 import LoginPage from "../pages/LoginPage/LoginPage";
+import MovieAllPage from "../pages/MovieAllPage/MovieAllPage";
 import MovieOnSchedulePage from "../pages/MovieOnSchedulePage/MovieOnSchedulePage";
 import PhimDangChieuPage from "../pages/PhimDangChieuPage/PhimDangChieuPage";
 import SearchPage from "../pages/SeachPage/SearchPage";
@@ -36,6 +37,11 @@ export const routes = [
     {
         path: '/phim/dangchieu',
         page: PhimDangChieuPage,
+        isShowHeader: true
+    },
+    {
+        path: '/all/movie',
+        page: MovieAllPage,
         isShowHeader: true
     }
 

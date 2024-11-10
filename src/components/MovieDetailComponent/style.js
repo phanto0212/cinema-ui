@@ -33,7 +33,7 @@ font-family: "Serif", sans-serif;
 font-size : 1.5rem;
 color: #fff;
 margin-top: 15px;
-margin-bottom: 8px;
+margin-bottom: 30px;
 `;
 export const MovieDescription = styled.p`
 font-family: "Fantasy", sans-serif;
@@ -116,7 +116,7 @@ export const Seat = styled.button`
   background-color: ${({ status, selected }) => 
     selected ? '#ffd700' : status === 'booked' ? '#888' : '#fff'};
   color: ${({ selected, status }) => 
-    selected || status === 'booked' ? '#ccc' : '#3b3b98'};
+    selected || status === 'booked' ? '#663399' : '#3b3b98'};
   cursor: ${({ status }) => (status === 'booked' ? 'not-allowed' : 'pointer')};
   font-weight: bold;
 
@@ -194,8 +194,8 @@ export const Select = styled.select`
   padding: 0.7em 3em;
   border: 2px solid #ffd700;
   border-radius: 5px;
-  background: none;
-  color: #ffd700;
+  background:#0F172A;
+  color: #fff;
 `;
 
 // Theater info styles
@@ -203,7 +203,7 @@ export const TheaterInfo = styled.div`
   background-color: #6a0dad;
   padding: 1em;
   border-radius: 10px;
-  margin-top: 0px;
+  margin-top: 20px;
   color: #ffd700;
 `;
 
@@ -239,15 +239,14 @@ export const ShowtimeButton = styled.button`
 export const ContainerTicket = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background-color: #1b1b3a;
-  height: 100vh;
+  margin-top: 100px;
   color: white;
 `;
 
 export const TitleTicket = styled.h2`
-  position: absolute;
-  top: 10%;
+  margin-bottom: 30px;
   font-size: 2rem;
   font-weight: bold;
   color: #ffffff;
@@ -256,7 +255,7 @@ export const TitleTicket = styled.h2`
 
 export const TicketContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 30px;
 `;
 
 export const TicketBox = styled.div`
@@ -264,7 +263,7 @@ export const TicketBox = styled.div`
   border: 1px solid #64648a;
   border-radius: 8px;
   padding: 20px;
-  width: 200px;
+  width: 500px;
   text-align: center;
 `;
 

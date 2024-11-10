@@ -6,6 +6,8 @@ import { Address, CardDetail, Container, Container2, ContainerTicket, Date, Date
 import { faTag, faUser, faStar, faClock } from '@fortawesome/free-solid-svg-icons'; // Nhập các biểu tượng
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ModalCustom} from '../CardComponent/style';
+import FooterTicketInfo from "../FooterTicketInfo/FooterTicketInfo";
+import ComboComponent from "../ComboComponent/ComboComponent";
 function MovieDetailComponent() {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const playerRef = useRef(null);
@@ -130,7 +132,7 @@ function MovieDetailComponent() {
             <img
               alt="Movie Poster"
               src="https://cinestar.com.vn/_next/image/?url=https%3A%2F%2Fapi-website.cinestar.com.vn%2Fmedia%2Fwysiwyg%2FPosters%2F10-2024%2Fvenom.jpg&w=1920&q=75"
-              style={{ width: "550px", height: "750px", objectFit: "cover", border: '1px solid #726565', borderRadius: '8px' }}></img>
+              style={{ width: "550px", height: "650px", objectFit: "cover", border: '1px solid #726565', borderRadius: '8px' }}></img>
           </Col>
           <Col span={13.5} style={{marginLeft: '50px'}}>
              <WrapperContainer>
@@ -211,20 +213,7 @@ function MovieDetailComponent() {
             <p>10/11</p>
             <span style={{fontWeight: '500'}} >Chủ Nhật</span>
           </Date>
-          <Date
-            selected={selectedDate === "10/11"}
-            onClick={() => setSelectedDate("10/11")}
-          >
-            <p>10/11</p>
-            <span style={{fontWeight: '500'}} >Chủ Nhật</span>
-          </Date>
-          <Date
-            selected={selectedDate === "10/11"}
-            onClick={() => setSelectedDate("10/11")}
-          >
-            <p>10/11</p>
-            <span style={{fontWeight: '500'}} >Chủ Nhật</span>
-          </Date>
+          
         </DateSelection>
 
         {/* Theater Selection */}
@@ -241,6 +230,7 @@ function MovieDetailComponent() {
 
         </div>
         {/* Theater Information */}
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         <TheaterInfo>
           <div style={{display: 'flex',flexDirection:'column', justifyContent:'left'}}>
           <TheaterName>Cinestar Huế</TheaterName>
@@ -268,6 +258,35 @@ function MovieDetailComponent() {
             </ShowtimeButton>
           </Showtimes>
         </TheaterInfo>
+        <TheaterInfo>
+          <div style={{display: 'flex',flexDirection:'column', justifyContent:'left'}}>
+          <TheaterName>Cinestar Huế</TheaterName>
+          <Address>25 Hai Bà Trưng, Vĩnh Ninh, Thành phố Huế, Thừa Thiên Huế</Address>
+          <p>Standard</p>
+          </div>
+          <Showtimes>
+            <ShowtimeButton
+              selected={selectedShowtime === "08:45"}
+              onClick={() => setSelectedShowtime("08:45")}
+            >
+              08:45
+            </ShowtimeButton>
+            <ShowtimeButton
+              selected={selectedShowtime === "12:45"}
+              onClick={() => setSelectedShowtime("12:45")}
+            >
+              12:45
+            </ShowtimeButton>
+            <ShowtimeButton
+              selected={selectedShowtime === "20:10"}
+              onClick={() => setSelectedShowtime("20:10")}
+            >
+              20:10
+            </ShowtimeButton>
+          </Showtimes>
+        </TheaterInfo>
+        </div>
+        
         </div>
       </Container2>
       <ContainerTicket>
@@ -318,6 +337,41 @@ function MovieDetailComponent() {
         ))}
       </Seating>
     </Container>
+    <div style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'}}>
+    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
+          title="COMBO SOLO"
+          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
+          price="84,000" />
+    </div>
+    <FooterTicketInfo />
     </div>
   )
 }

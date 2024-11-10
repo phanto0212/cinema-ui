@@ -4,12 +4,14 @@ import { faTicketAlt, faMapMarkerAlt, faPizzaSlice, faUser } from '@fortawesome/
 
 import { Container, ContainerButton, Icon, LinkButton, LoginAndSignup, User, UserIcon, Wrapper, WrapperHeaderText } from './style'
 import InputComponent from '../InputComponent/InputComponent';
+import { useNavigate } from 'react-router-dom';
 function HeaderComponent() {
+  const Navigate = useNavigate()
   return (
     <div >
     <Wrapper>
       <Col span={5}>
-      <WrapperHeaderText>Nhom8's Cinema</WrapperHeaderText></Col>
+      <WrapperHeaderText onClick={()=> Navigate('/')}>Nhom8's Cinema</WrapperHeaderText></Col>
       <Col span={11}>
         <Container>
         <ContainerButton style={{backgroundColor: '#ff7401'}} ><LinkButton style={{color: '#fff'}} ><Icon icon={faTicketAlt} size="1x" />Đặt vé</LinkButton></ContainerButton>
@@ -22,7 +24,7 @@ function HeaderComponent() {
         <InputComponent />
         <User>
           <UserIcon icon={faUser}/>
-          <LoginAndSignup>Đăng nhập</LoginAndSignup>
+          <LoginAndSignup onClick={()=> Navigate('/login')}>Đăng nhập</LoginAndSignup>
         </User>
       </Col>
     </Wrapper>
