@@ -42,7 +42,7 @@ export const Overlay = styled.div`
   opacity: 0;
   transition: opacity 0.3s ease;
   
-  padding: 10px;
+  padding-right: 30px;
   
   
   /* Hiển thị thông tin khi hover */
@@ -58,7 +58,7 @@ export const NameCard = styled.h2`
 position: relative;
 top: -50px;
 right: -23px;
-font-size:1.3rem;
+font-size:1rem;
 font-weight: 700;
 color: #fff;
 

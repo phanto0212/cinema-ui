@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import { ToastContainer, toast } from 'react-toastify';
+import Loading from '../../components/LoadingComponent/Loading';
+import newRequest from '../../utils/request';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 // Container tổng thể cho giao diện đăng nhập
 const Container = styled.div`
   display: flex;
@@ -73,7 +77,6 @@ const LoginButton = styled.button`
   padding: 10px;
   font-size: 16px;
   color: #fff;
-  background-color: #ffcc00;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -84,18 +87,7 @@ const LoginButton = styled.button`
   }
 `;
 
-const ForgotPassword = styled.a`
-  display: block;
-  text-align: right;
-  font-size: 14px;
-  color: #333;
-  text-decoration: none;
-  margin-top: 10px;
 
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 const RegisterLink = styled.div`
   text-align: center;
@@ -113,26 +105,89 @@ const RegisterLink = styled.div`
     }
   }
 `;
+const ErrorMessage = styled.span`
+  display: block;
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 5px;
+  text-align: center;
+  background-color: #fff5f5;
+  padding: 5px 10px;
+  border-radius: 4px;
+`;
 
 function LoginPage() {
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMassage, setErrorMesage] = useState('')
+  const Navigate =  useNavigate()
+  const [isLoaded, setIsLoaded] = useState(false)
+  useEffect(() => {
+    // Kiểm tra xem tất cả các trường có dữ liệu không
+    if (userName && password ) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [userName, password]); // Theo dõi sự thay đổi của các trường
+  const handleSignIn = async () => {
+    try {
+        const response = await newRequest.post('/api/auth/login', {
+            username: userName,
+            password: password
+            
+        }
+        );
+        localStorage.setItem('authToken', response.data.token);
+        toast.success('Đăng nhập thành công');
+        setIsLoaded(true)
+        setTimeout(() => {
+          Navigate('/');
+        }, 2000); // Thay đổi thời gian theo nhu cầu
+        
+    } catch (error) {
+      setErrorMesage(error.response ? error.response.data : error.message)
+      toast.error(error.response ? error.response.data : error.message);
+    }
+};
   return (
     <Container>
       <LoginBox>
         <Title>ĐĂNG NHẬP</Title>
         <Label>Tài khoản, Email hoặc số điện thoại *</Label>
-        <Input type="text" placeholder="Nhập tài khoản, email hoặc số điện thoại" />
+        <Input
+          type="text"
+          placeholder="Nhập tài khoản, email hoặc số điện thoại"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+        />
         <Label>Mật khẩu *</Label>
-        <Input type="password" placeholder="Nhập mật khẩu" />
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Nhập mật khẩu"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <CheckboxContainer>
-          <Checkbox type="checkbox" />
-          <CheckboxLabel>Lưu mật khẩu đăng nhập</CheckboxLabel>
+          <Checkbox
+            type="checkbox"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <CheckboxLabel>Hiện mật khẩu</CheckboxLabel>
         </CheckboxContainer>
-        <LoginButton>ĐĂNG NHẬP</LoginButton>
-       
+        <Loading isLoading={isLoaded}>
+        <LoginButton onClick={handleSignIn} style={{backgroundColor: isDisabled ? '#ccc' : '#ffcc00'}} disabled={isDisabled}>ĐĂNG NHẬP</LoginButton>
+        </Loading>
+         <ErrorMessage>{errorMassage}</ErrorMessage>
         <RegisterLink>
           Bạn chưa có tài khoản? <a href="/signup">Đăng ký ngay</a>
         </RegisterLink>
       </LoginBox>
+      <ToastContainer style={{fontSize: '12px'}}/>
     </Container>
   );
 }
