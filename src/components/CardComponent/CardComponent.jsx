@@ -160,8 +160,8 @@ function CardComponent({movie, onClick}) {
           <img style={{ marginBottom: '4px' }} alt="icon" src="https://cinestar.com.vn/assets/images/icon-play-vid.svg" />
           <ViewTrailer>Xem Trailer</ViewTrailer>
         </TrailerContainer>
-        <ContainerButton style={{ backgroundColor: '#ff7401' }}>
-          <LinkButton onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}}  style={{ color: '#fff' }}>Đặt vé</LinkButton>
+        <ContainerButton onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}} style={{ backgroundColor: '#ff7401' }}>
+          <LinkButton   style={{ color: '#fff' }}>Đặt vé</LinkButton>
         </ContainerButton>
       </ContainerALl>
 

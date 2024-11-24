@@ -5,23 +5,27 @@ import newRequest from '../../utils/request'
 import { useParams } from 'react-router-dom'
 
 function MovieDetailPage() {
-    const [movies, setMovies] = useState([])
+    const [movie, setMovie] = useState([])
     const params = useParams()
-  
-     const id = params.tourId;
-    const fetchMovies = async() =>{
+
+    const id = params.movieId;
+    const fetchMovie = async() =>{
       try{  
-        const reponse = await newRequest.get()
+        const reponse = await newRequest.get(`/api/movie/get/movie/${id}`)
+        setMovie(reponse.data.movie)
       }
       catch(error){
         console.error(error)
       }
     }
+    useEffect(()=>{
+      fetchMovie()
+    }, [id])
   return (
     <div >
         <HeaderComponent/>
         <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '4000px', marginTop: '91.5px' }}>
-          <MovieDetailComponent/>
+          <MovieDetailComponent movie={movie} idParams={id}/>
         </div>
     </div>
   )

@@ -38,6 +38,10 @@ function HeaderComponent() {
         console.log('error:', error);
     }
 };
+const handleLogout = () =>{
+  localStorage.removeItem('authToken')
+  Navigate('/login')
+}
   // const HandleNavigateSignUp = () => {
   //   Navigate('/sign-up');
   // };
@@ -55,6 +59,7 @@ function HeaderComponent() {
   const userMenu = (
     <Menu>
       <Menu.Item onClick={()=> Navigate('/profile')} key="1">Quản lý trang cá nhân</Menu.Item>
+      <Menu.Item onClick={handleLogout} key="2">Đăng xuất</Menu.Item>
     </Menu>
   );
   return (

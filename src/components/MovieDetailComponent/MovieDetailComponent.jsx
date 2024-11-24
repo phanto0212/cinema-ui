@@ -1,20 +1,70 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import YouTube from "react-youtube";
 import { CloseOutlined } from '@ant-design/icons';
 import {Col, Row} from 'antd'
-import { Address, CardDetail, Container, Container2, ContainerTicket, Date, DateSelection, Label, MovieDescription, MovieDescription2, MovieDescriptionName, MovieHeaderName, Overlay, Price, QuantityButton, QuantityContainer, QuantityDisplay, Row1, Screen, Seat, Seating, Select, ShowtimeButton, Showtimes, Subtitle, TheaterInfo, TheaterName, TheaterSelection, TicketBox, TicketCategory, TicketContainer, TicketType, Title1, TitleTicket, TrailerContainer, ViewTrailer, WrapperContainer } from './style'
+import { vi } from "date-fns/locale"; // Import locale tiếng Việt
+import removeAccents from 'remove-accents';
+import { Address, CardDetail, Container, Container2, ContainerTicket, StyleDate, DateSelection, Label, MovieDescription, MovieDescription2, MovieDescriptionName, MovieHeaderName, Overlay, Price, QuantityButton, QuantityContainer, QuantityDisplay, Row1, Screen, Seat, Seating, Select, ShowtimeButton, Showtimes, Subtitle, TheaterInfo, TheaterName, TheaterSelection, TicketBox, TicketCategory, TicketContainer, TicketType, Title1, TitleTicket, TrailerContainer, ViewTrailer, WrapperContainer } from './style'
 import { faTag, faUser, faStar, faClock } from '@fortawesome/free-solid-svg-icons'; // Nhập các biểu tượng
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ModalCustom} from '../CardComponent/style';
 import FooterTicketInfo from "../FooterTicketInfo/FooterTicketInfo";
 import ComboComponent from "../ComboComponent/ComboComponent";
-function MovieDetailComponent() {
+import { format, addDays } from "date-fns"; // Thư viện để xử lý ngày tháng
+import newRequest from "../../utils/request";
+function MovieDetailComponent({movie, idParams}) {
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [location, setLocation] = useState("hanoi")
   const playerRef = useRef(null);
-  const [selectedDate, setSelectedDate] = React.useState("08/11");
-  const [selectedShowtime, setSelectedShowtime] = React.useState("08:45");
+  const [selectedDate, setSelectedDate] = React.useState("");
+  const [selectedShowtime, setSelectedShowtime] = React.useState("");
   const [adultTicketCount, setAdultTicketCount] = useState(0);
   const [childTicketCount, setChildTicketCount] = useState(0);
+  const [selectedTheaterId, setSelectedTheaterId] = useState(null);  // State để lưu id rạp được chọn
+  const [cinemas, setCinemas] = useState([])
+  const [showtime, setShowtime] = useState([])
+  const [seats, setSeats] = useState([])
+  const handleTheaterSelect = (id) => {
+    setSelectedTheaterId(id);  // Cập nhật ID rạp được chọn
+  };
+  const provinces = [
+    "An Giang", "Bà Rịa - Vũng Tàu", "Bạc Liêu", "Bắc Kạn", "Bắc Giang", "Bắc Ninh", 
+    "Bến Tre", "Bình Dương", "Bình Định", "Bình Phước", "Bình Thuận", "Cà Mau", 
+    "Cần Thơ", "Cao Bằng", "Đà Nẵng", "Đắk Lắk", "Đắk Nông", "Điện Biên", 
+    "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", "Hà Nội", "Hà Tĩnh", 
+    "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hưng Yên", "Khánh Hòa", 
+    "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", "Long An", 
+    "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên", 
+    "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng", 
+    "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế", 
+    "Tiền Giang", "TP Hồ Chí Minh", "Trà Vinh", "Tuyên Quang", "Vĩnh Long", 
+    "Vĩnh Phúc", "Yên Bái"
+  ];
+  const getNextDates = (numDays) => {
+    const today = new Date(); // Ngày hôm nay
+    const year = today.getFullYear(); // Lấy năm hiện tại
+  
+    return Array.from({ length: numDays }, (_, i) => {
+      const nextDate = addDays(today, i); // Thêm i ngày vào hôm nay
+  
+      // Định dạng ngày thành "dd/MM"
+      const formattedDate = format(nextDate, "dd/MM");
+  
+      // Định dạng ngày thành "yyyy-MM-dd" để lưu vào cơ sở dữ liệu
+      const dbFormattedDate = format(nextDate, "yyyy-MM-dd");
+  
+      // Lấy tên ngày bằng tiếng Việt
+      const dayName = format(nextDate, "EEEE", { locale: vi });
+  
+      return {
+        date: formattedDate,    // Định dạng ngày cho người dùng (dd/MM)
+        dayName: dayName,       // Tên ngày (ví dụ: "Chủ Nhật")
+        value: dbFormattedDate  // Giá trị ngày cho cơ sở dữ liệu (yyyy-MM-dd)
+      };
+    });
+  };
+  
+  const dates = getNextDates(5); // Lấy 5 ngày tiếp theo
   const seatsData = [
     // Hàng A
     { id: 'A01', status: 'available' }, { id: 'A02', status: 'booked' }, { id: 'A03', status: 'available' },
@@ -125,33 +175,79 @@ function MovieDetailComponent() {
       controls: 0, // Tắt các điều khiển
     },
   };
+  const fetchCinema = async()=>{
+    try{
+       const reponse = await newRequest.post('/api/cinema/get/all/city',{
+        movie_id: idParams,  // ID phim
+        city: location,    // Tên thành phố
+        day_book: selectedDate // Ngày đặt vé
+       });
+       setCinemas(reponse.data.cinemas || [])
+    }
+    catch(error){
+      console.error(error)
+    }
+  }
+  useEffect(()=>{
+   fetchCinema()
+  },[selectedDate,location])
+
+  const fetchShowtime = async()=>{
+    try{
+       const reponse = await newRequest.post('/api/showtime/get/all/showtime',{
+        movie_id: idParams,  // ID phim
+        cinema_id: selectedTheaterId,    // Tên thành phố
+        day_show: selectedDate // Ngày đặt vé
+       });
+       setShowtime(reponse.data.showtimes || [])
+
+    }
+    catch(error){
+      console.error(error)
+    }
+  }
+  useEffect(()=>{
+     fetchShowtime(selectedShowtime)
+  },[idParams, selectedTheaterId, selectedDate])
+   const fetchSeats = async()=>{
+    try{
+          const reponse = await newRequest.get(`/api/seat/get/by/showtime/${selectedShowtime}`)
+          setSeats(reponse.data.seats || [])
+    }
+    catch(error){
+      console.error(error)
+    }
+   }
+   useEffect(()=>{
+    fetchSeats(selectedShowtime)
+   },[selectedShowtime])
   return (
     <div  >
         <Row style={{position: 'relative', top:'20px'}}>
           <Col span={10}>
             <img
               alt="Movie Poster"
-              src="https://cinestar.com.vn/_next/image/?url=https%3A%2F%2Fapi-website.cinestar.com.vn%2Fmedia%2Fwysiwyg%2FPosters%2F10-2024%2Fvenom.jpg&w=1920&q=75"
-              style={{ width: "550px", height: "650px", objectFit: "cover", border: '1px solid #726565', borderRadius: '8px' }}></img>
+              src={movie.poster_url}
+              style={{ width: "550px", height: "800px", objectFit: "cover", border: '1px solid #726565', borderRadius: '8px' }}></img>
           </Col>
-          <Col span={13.5} style={{marginLeft: '50px'}}>
+          <Col span={13.5} style={{marginLeft: '50px', maxWidth:'650px'}}>
              <WrapperContainer>
-                <MovieHeaderName>VENOM: KÈO CUỐI (T13)</MovieHeaderName>
+                <MovieHeaderName>{movie.title}</MovieHeaderName>
                 <Overlay>
-                  <CardDetail><span style={{ color: '#F3EA28' }}> <FontAwesomeIcon icon={faTag} style={{ marginRight: '10px' }} /> </span>hành động khoa học viễn tưởng</CardDetail>
-                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} /> </span>Tom Hardy</CardDetail>
+                  <CardDetail><span style={{ color: '#F3EA28' }}> <FontAwesomeIcon icon={faTag} style={{ marginRight: '10px' }} /> </span>{movie.kind}</CardDetail>
+                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} /> </span>{movie.director}</CardDetail>
                   <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faStar} style={{ marginRight: '10px' }} /> </span>8.5/10</CardDetail>
-                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} /></span>109 phút</CardDetail>
+                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} /></span>{movie.duration}'</CardDetail>
                 </Overlay>
                 <MovieDescriptionName>MÔ TẢ</MovieDescriptionName>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                     <MovieDescription>Đạo diễn: Kelly Marcel</MovieDescription>
-                     <MovieDescription>Diễn viên: Tom Hardy, Juno Temple, Chiwetel Ejiofor, Clark Backo, Stephen Graham</MovieDescription>
-                     <MovieDescription>Khởi chiếu: Thứ Sáu, 25/10/2024</MovieDescription>
+                     <MovieDescription>Đạo diễn: {movie.director}</MovieDescription>
+                     <MovieDescription>Diễn viên: {movie.actors}</MovieDescription>
+                     <MovieDescription>Khởi chiếu: {movie.release_date}</MovieDescription>
                 </div>
                 <MovieDescriptionName>NỘI DUNG PHIM</MovieDescriptionName>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                     <MovieDescription2>Tom Hardy sẽ tái xuất trong bom tấn Venom: The Last Dance </MovieDescription2>                   
+                     <MovieDescription2>{movie.text_description} </MovieDescription2>                   
                 </div>
                 <TrailerContainer onClick={showModal}>
                    <img style={{ marginBottom: '4px', width: '35px' }} alt="icon" src="https://cinestar.com.vn/assets/images/icon-play-vid.svg" />
@@ -173,7 +269,7 @@ function MovieDetailComponent() {
       >
         <div style={{ width: '100%', height: '450px', backgroundColor: 'transparent' }}> {/* Div chứa video fit modal */}
           <YouTube 
-            videoId="6yCMRxGI4RA" // Thay VIDEO_ID với ID của video YouTube
+            videoId={movie.trailer_url} // Thay VIDEO_ID với ID của video YouTube
             opts={videoOptions} 
             ref={playerRef} 
             style={{ width: '100%', height: '100%', padding: '0' }} // Video sẽ tự động fit vào div
@@ -188,31 +284,21 @@ function MovieDetailComponent() {
         </Row>
         
       <Container2>
-        <Title1>LỊCH CHIẾU</Title1>
+        
+       <Title1>LỊCH CHIẾU</Title1>
 
-        {/* Date Selection */}
+        
         <DateSelection>
-          <Date
-            selected={selectedDate === "08/11"}
-            onClick={() => setSelectedDate("08/11")}
-          >
-            <p>08/11</p>
-            <span style={{fontWeight: '500'}}>Thứ Sáu</span>
-          </Date>
-          <Date
-            selected={selectedDate === "09/11"}
-            onClick={() => setSelectedDate("09/11")}
-          >
-            <p>09/11</p>
-            <span style={{fontWeight: '500'}} >Thứ Bảy</span>
-          </Date>
-          <Date
-            selected={selectedDate === "10/11"}
-            onClick={() => setSelectedDate("10/11")}
-          >
-            <p>10/11</p>
-            <span style={{fontWeight: '500'}} >Chủ Nhật</span>
-          </Date>
+          {dates.map(({ date, dayName, value }, index) => (
+        <StyleDate
+          key={index}
+          selected={selectedDate === value}
+          onClick={() => setSelectedDate(value)}
+        >
+          <p>{date}</p>
+          <span style={{ fontWeight: "500" }}>{dayName}</span>
+        </StyleDate>
+      ))}
           
         </DateSelection>
 
@@ -221,81 +307,59 @@ function MovieDetailComponent() {
         <div style={{marginTop: '10px', display: 'flex', flexDirection: 'row', alignItems:'center',justifyContent:'space-between'}}>
         <Subtitle>DANH SÁCH RẠP</Subtitle>
         <TheaterSelection>
-          <Select name="city" id="city">
-            <option value="hue">Huế</option>
-            <option value="hanoi">Hà Nội</option>
-            <option value="hochiminh">TP Hồ Chí Minh</option>
+          <Select name="city" id="city" value={location} onChange={(e)=>setLocation(e.target.value)} >
+          {provinces.map((province, index) => (
+            <option 
+              key={index} 
+              value={removeAccents (province).toLowerCase().replace(/ /g, "")}
+            >
+           {province}
+          </option>
+          ))}
           </Select>
         </TheaterSelection>
 
         </div>
         {/* Theater Information */}
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
-        <TheaterInfo>
-          <div style={{display: 'flex',flexDirection:'column', justifyContent:'left'}}>
-          <TheaterName>Cinestar Huế</TheaterName>
-          <Address>25 Hai Bà Trưng, Vĩnh Ninh, Thành phố Huế, Thừa Thiên Huế</Address>
-          <p>Standard</p>
+        {cinemas.length > 0 ? (cinemas.map((cinema) => (
+        <TheaterInfo
+          key={cinema.cinemaId}
+          selected={selectedTheaterId === cinema.cinemaId}  // Kiểm tra xem rạp này có được chọn hay không
+          onClick={() => handleTheaterSelect(cinema.cinemaId)}  // Gọi handle khi click vào rạp
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'left' }}>
+            <TheaterName>{cinema.cinemaName}</TheaterName>
+            <Address>{cinema.address}</Address>
+            <p>Standard</p>
           </div>
-          <Showtimes>
-            <ShowtimeButton
-              selected={selectedShowtime === "08:45"}
-              onClick={() => setSelectedShowtime("08:45")}
-            >
-              08:45
-            </ShowtimeButton>
-            <ShowtimeButton
-              selected={selectedShowtime === "12:45"}
-              onClick={() => setSelectedShowtime("12:45")}
-            >
-              12:45
-            </ShowtimeButton>
-            <ShowtimeButton
-              selected={selectedShowtime === "20:10"}
-              onClick={() => setSelectedShowtime("20:10")}
-            >
-              20:10
-            </ShowtimeButton>
-          </Showtimes>
         </TheaterInfo>
-        <TheaterInfo>
-          <div style={{display: 'flex',flexDirection:'column', justifyContent:'left'}}>
-          <TheaterName>Cinestar Huế</TheaterName>
-          <Address>25 Hai Bà Trưng, Vĩnh Ninh, Thành phố Huế, Thừa Thiên Huế</Address>
-          <p>Standard</p>
-          </div>
-          <Showtimes>
-            <ShowtimeButton
-              selected={selectedShowtime === "08:45"}
-              onClick={() => setSelectedShowtime("08:45")}
-            >
-              08:45
-            </ShowtimeButton>
-            <ShowtimeButton
-              selected={selectedShowtime === "12:45"}
-              onClick={() => setSelectedShowtime("12:45")}
-            >
-              12:45
-            </ShowtimeButton>
-            <ShowtimeButton
-              selected={selectedShowtime === "20:10"}
-              onClick={() => setSelectedShowtime("20:10")}
-            >
-              20:10
-            </ShowtimeButton>
-          </Showtimes>
-        </TheaterInfo>
+      ))) : (
+        <p>Không có rạp chiếu</p>
+      )}
         </div>
-        
+        {cinemas.length > 0 && <TitleTicket style={{margin: '70px 0 20px 0'}}>CHỌN GIỜ CHIẾU</TitleTicket>}
+        <Showtimes>
+          { showtime.map((showtime,index)=>(
+
+            <ShowtimeButton key={index} 
+              selected={selectedShowtime === showtime.id}
+              onClick={() => setSelectedShowtime(showtime.id)}
+            >
+              {showtime.time_show}
+            </ShowtimeButton> 
+          ))}
+            
+          </Showtimes>
         </div>
       </Container2>
-      <ContainerTicket>
+      {selectedShowtime !== "" && <ContainerTicket>
       <TitleTicket>CHỌN LOẠI VÉ</TitleTicket>
       <TicketContainer>
         <TicketBox>
           <TicketType>NGƯỜI LỚN</TicketType>
           <TicketCategory>ĐƠN</TicketCategory>
-          <Price>45,000 VNĐ</Price>
+          <Price>{movie.child_price} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setAdultTicketCount(Math.max(adultTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{adultTicketCount}</QuantityDisplay>
@@ -305,7 +369,7 @@ function MovieDetailComponent() {
         <TicketBox>
           <TicketType>NGƯỜI LỚN</TicketType>
           <TicketCategory>ĐÔI</TicketCategory>
-          <Price>95,000 VNĐ</Price>
+          <Price>{movie.adult_price} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setChildTicketCount(Math.max(childTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{childTicketCount}</QuantityDisplay>
@@ -313,16 +377,16 @@ function MovieDetailComponent() {
           </QuantityContainer>
         </TicketBox>
       </TicketContainer>
-    </ContainerTicket>
+    </ContainerTicket>}
         
-        <Container>
-      <Screen>Màn hình</Screen>
+    {seats.length>0 &&  <Container>
+        <Screen>Màn hình</Screen>
       <Seating>
         {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((row) => (
           <Row1 key={row}>
             <Label>{row}</Label>
-            {seatsData
-              .filter((seat) => seat.id.startsWith(row))
+            { seats
+              .filter((seat) => seat.seat_number.startsWith(row))
               .map((seat) => (
                 <Seat
                   key={seat.id}
@@ -330,13 +394,13 @@ function MovieDetailComponent() {
                   selected={selectedSeats.includes(seat.id)}
                   onClick={() => handleSeatClick(seat)}
                 >
-                  {seat.id}
+                  {seat.seat_number}
                 </Seat>
               ))}
           </Row1>
         ))}
       </Seating>
-    </Container>
+    </Container>}
     <div style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'}}>
     <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
           title="COMBO SOLO"
@@ -371,7 +435,7 @@ function MovieDetailComponent() {
           description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
           price="84,000" />
     </div>
-    <FooterTicketInfo />
+    {/* <FooterTicketInfo /> */}
     </div>
   )
 }

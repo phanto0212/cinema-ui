@@ -163,12 +163,13 @@ export const DateSelection = styled.div`
   margin-bottom: 1.5em;
 `;
 
-export const Date = styled.div`
+export const StyleDate = styled.div`
   padding: 0.4em 0.4em;
   border: 1px solid #ffd700;
   border-radius: 10px;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 600; 
+  min-width: 120px;
   color: ${props => (props.selected ? '#3b3b98' : '#ffd700')};
   background-color: ${props => (props.selected ? '#ffd700' : 'transparent')};
   cursor: pointer;
@@ -200,11 +201,15 @@ export const Select = styled.select`
 
 // Theater info styles
 export const TheaterInfo = styled.div`
+  width: 100%;
   background-color: #6a0dad;
   padding: 1em;
   border-radius: 10px;
   margin-top: 20px;
   color: #ffd700;
+  border: ${(props) => (props.selected ? '2px solid #FFD700' : 'none')};  /* Thêm border khi chọn rạp */
+  cursor: pointer;  /* Thêm con trỏ để biết có thể click vào */
+  transition: border 0.3s ease;  /* Thêm hiệu ứng border khi click */
 `;
 
 export const TheaterName = styled.h3`
