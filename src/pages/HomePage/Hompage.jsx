@@ -9,9 +9,11 @@ import { TitleMovie } from './style';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import { useNavigate } from 'react-router-dom';
 import newRequest from '../../utils/request';
+import Modal from '../../components/ModalComponent/Modal';
 
 
 function Hompage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const Navigate = useNavigate()
   const [movies, setMovies] = useState([])
   const fetchMovies =  async() =>{
@@ -36,7 +38,8 @@ function Hompage() {
           <CardComponent movie={movie} key={index} onClick={()=> Navigate(`/movie/detail/${movie.id}`)} ></CardComponent>
         ))}
       </div>
-  
+      <button onClick={() => setIsModalOpen(true)}>Hiển thị Modal</button>
+      <Modal isOpen={isModalOpen} message="oke day" onClose={() => setIsModalOpen(false)} />
     </div>
   )
 }

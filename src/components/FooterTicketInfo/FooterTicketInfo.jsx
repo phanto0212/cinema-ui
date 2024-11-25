@@ -1,20 +1,23 @@
 import React from 'react'
-import { BookButton, MovieDetails, MovieTitle, PaymentSection, SelectedSeats, TicketInfo, Timer, TotalAmount } from './style'
+import { BookButton, MovieDetails, MovieTitle, PaymentSection, SelectedSeats, TicketInfo, TotalAmount } from './style'
 
-function FooterTicketInfo() {
+function FooterTicketInfo({cinemaName, nameMovie, amountAdult, amountChild, totalPrice, seats, selectedSeats, showtime_hour}) {
+  const selectedSeatNumbers = seats
+    .filter(seat => selectedSeats.includes(seat.id))
+    .map(seat => seat.seat_number);
   return (
     <div>
     <TicketInfo>
     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginLeft: '100px'}}>
-        <MovieTitle>ĐỪNG BUÔNG TAY (T18)</MovieTitle>
+        <MovieTitle>{nameMovie}</MovieTitle>
       <MovieDetails>
-        Cinestar Huế | 2 Người Lớn <br />
-        Phòng chiếu: 08 | D07, D08 | 15:55
+        {cinemaName} | {amountAdult} Người Lớn | {amountChild} Trẻ Nhỏ <br />
+        Phòng chiếu: 08 | {selectedSeatNumbers.map((seat_number,index)=>(<span key={index}> {seat_number}, </span>))}|  {showtime_hour}
       </MovieDetails>
-      <SelectedSeats>1 Combo Couple</SelectedSeats>
+      <SelectedSeats>1 Combo Couple </SelectedSeats>
     </div>
       <PaymentSection>
-        <TotalAmount>Tạm tính: <span style={{fontSize:'25px'}}>199,000 VNĐ</span></TotalAmount>
+        <TotalAmount>Tạm tính: <span style={{fontSize:'25px'}}>{totalPrice} VNĐ</span></TotalAmount>
         <BookButton>ĐẶT VÉ</BookButton>
       </PaymentSection>
     </TicketInfo>
