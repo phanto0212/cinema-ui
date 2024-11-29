@@ -24,7 +24,7 @@ function MovieDetailPage() {
   return (
     <div >
         <HeaderComponent/>
-        <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '4000px', marginTop: '91.5px' }}>
+        <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '5000px', marginTop: '91.5px' }}>
           <MovieDetailComponent movie={movie} idParams={id}/>
         </div>
     </div>

@@ -30,6 +30,8 @@ export const MovieDetails = styled.div`
 `;
 
 export const SelectedSeats = styled.div`
+  display:flex;
+  flex-direction: column;
   font-size: 18px;
   font-weight: bold;
   color: #ffffff;

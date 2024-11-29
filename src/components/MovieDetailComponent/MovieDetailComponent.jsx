@@ -17,18 +17,21 @@ function MovieDetailComponent({movie, idParams}) {
   const [totalPrice,setTotalPrice] = useState(0)
   const [showtime_hour,setShowtime_hour] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [screen, setScreen] = useState([])
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [location, setLocation] = useState("hanoi")
   const playerRef = useRef(null);
   const [selectedDate, setSelectedDate] = React.useState("");
-  const [selectedShowtime, setSelectedShowtime] = React.useState("");
+  const [selectedShowtime, setSelectedShowtime] = React.useState(0);
   const [adultTicketCount, setAdultTicketCount] = useState(0);
   const [childTicketCount, setChildTicketCount] = useState(0);
-  const [maxSeats,setMaxSeats] = useState(adultTicketCount+childTicketCount)
+  const [maxSeats,setMaxSeats] = useState(0)
   const [selectedTheaterId, setSelectedTheaterId] = useState(null);  // State để lưu id rạp được chọn
   const [cinemas, setCinemas] = useState([])
   const [showtime, setShowtime] = useState([])
   const [seats, setSeats] = useState([])
+  const [combos, setCombos] = useState([])
+  const [selectedCombos, setSelectedCombos] = useState([]);
   const handleTheaterSelect = (id) => {
     setSelectedTheaterId(id);  // Cập nhật ID rạp được chọn
   };
@@ -45,6 +48,34 @@ function MovieDetailComponent({movie, idParams}) {
     "Tiền Giang", "TP Hồ Chí Minh", "Trà Vinh", "Tuyên Quang", "Vĩnh Long", 
     "Vĩnh Phúc", "Yên Bái"
   ];
+  const handleClear = ()=>{
+    setCinemas([])
+    setSelectedShowtime(0)
+    setSelectedTheaterId(0)
+  }
+  const handleQuantityChangeCombo = (combo_id, name, quantity, price) => {
+    console.log('Price in handleQuantityChangeCombo:', combos); // Kiểm tra giá trị price
+  
+    setSelectedCombos((prevCombos) => {
+      // Tìm combo trong danh sách hiện tại
+      const existingCombo = prevCombos.find((combo) => combo.combo_id === combo_id);
+      
+      if (existingCombo) {
+        // Cập nhật số lượng và giá nếu combo đã tồn tại
+        return quantity > 0
+          ? prevCombos.map((combo) =>
+              combo.combo_id === combo_id ? { ...combo, quantity, price } : combo
+            )
+          : prevCombos.filter((combo) => combo.combo_id !== combo_id); // Xóa nếu quantity = 0
+      }
+      
+      // Thêm combo mới nếu chưa tồn tại, bao gồm price
+      return [...prevCombos, { combo_id, name, quantity, price }];
+    });
+  };
+  
+  
+
   const getNextDates = (numDays) => {
     const today = new Date(); // Ngày hôm nay
     const year = today.getFullYear(); // Lấy năm hiện tại
@@ -68,11 +99,35 @@ function MovieDetailComponent({movie, idParams}) {
       };
     });
   };
-  useEffect(()=>{
-    setTotalPrice(adultTicketCount*movie.adult_price+childTicketCount*movie.child_price)
-    setMaxSeats(childTicketCount+adultTicketCount)
-    setSelectedSeats([])
-  },[adultTicketCount, childTicketCount])
+  useEffect(() => {
+    let totalpriceCombo = 0;
+
+    // Duyệt qua selectedCombos để tính tổng
+    if (selectedCombos.length > 0) {
+      for (let i = 0; i < selectedCombos.length; i++) {
+        const selectedCombo = selectedCombos[i];
+        
+        // Tìm thông tin combo trong mảng combos dựa trên id
+        const comboDetails = combos.find(combo => combo.id === selectedCombo.combo_id);
+        
+        // Nếu tìm thấy combo, tính giá trị
+        if (comboDetails) {
+          totalpriceCombo += comboDetails.price * selectedCombo.quantity;
+        }
+      }
+    }
+    
+    console.log('Total price of selected combos:', totalpriceCombo);
+  
+    const ticketTotal =
+      adultTicketCount * movie.adult_price +
+      childTicketCount * movie.child_price +
+      totalpriceCombo;
+  
+    setTotalPrice(ticketTotal);
+    setMaxSeats(childTicketCount + adultTicketCount);
+    setSelectedSeats([]);
+  }, [adultTicketCount, childTicketCount, selectedCombos, movie]);
 
   const dates = getNextDates(5); // Lấy 5 ngày tiếp theo
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -83,7 +138,7 @@ function MovieDetailComponent({movie, idParams}) {
       const distance = maxSeats; // Khoảng cách tối thiểu (số ghế giữa các ghế đã chọn)
       return selectedSeats.every((selectedSeatId) => {
         const distanceBetweenSeats = Math.abs(newSeatId - selectedSeatId);
-        return distanceBetweenSeats <= distance;
+        return distanceBetweenSeats <= distance-1;
       });
     };
   
@@ -159,7 +214,15 @@ function MovieDetailComponent({movie, idParams}) {
   useEffect(()=>{
    fetchCinema()
   },[selectedDate,location])
-
+  const fetchCombo = async()=>{
+    try{
+     const reponse = await newRequest.post('/api/combo/get/all')
+     setCombos(reponse.data.combos || [])
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
   const fetchShowtime = async()=>{
     try{
        const reponse = await newRequest.post('/api/showtime/get/all/showtime',{
@@ -174,13 +237,16 @@ function MovieDetailComponent({movie, idParams}) {
       console.error(error)
     }
   }
+  
   useEffect(()=>{
      fetchShowtime(selectedShowtime)
+     fetchCombo()
   },[idParams, selectedTheaterId, selectedDate])
    const fetchSeats = async()=>{
     try{
           const reponse = await newRequest.get(`/api/seat/get/by/showtime/${selectedShowtime}`)
           setSeats(reponse.data.seats || [])
+          setScreen(reponse.data.screen || [])
     }
     catch(error){
       console.error(error)
@@ -264,7 +330,7 @@ function MovieDetailComponent({movie, idParams}) {
         <StyleDate
           key={index}
           selected={selectedDate === value}
-          onClick={() => setSelectedDate(value)}
+          onClick={() => {setSelectedDate(value); handleClear()}}
         >
           <p>{date}</p>
           <span style={{ fontWeight: "500" }}>{dayName}</span>
@@ -309,9 +375,9 @@ function MovieDetailComponent({movie, idParams}) {
         <p>Không có rạp chiếu</p>
       )}
         </div>
-        {cinemas.length > 0 && <TitleTicket style={{margin: '70px 0 20px 0'}}>CHỌN GIỜ CHIẾU</TitleTicket>}
+        {selectedTheaterId !== 0 && <TitleTicket style={{margin: '70px 0 20px 0'}}>CHỌN GIỜ CHIẾU</TitleTicket>}
         <Showtimes>
-          { showtime.map((showtime,index)=>(
+          {selectedTheaterId !== 0 && showtime.map((showtime,index)=>(
 
             <ShowtimeButton key={index} 
               selected={selectedShowtime === showtime.id}
@@ -322,15 +388,16 @@ function MovieDetailComponent({movie, idParams}) {
           ))}
             
           </Showtimes>
+
         </div>
       </Container2>
-      {selectedShowtime !== "" && <ContainerTicket>
+      {selectedShowtime !== 0 && <ContainerTicket>
       <TitleTicket>CHỌN LOẠI VÉ</TitleTicket>
       <TicketContainer>
         <TicketBox>
           <TicketType>NGƯỜI LỚN</TicketType>
           <TicketCategory>ĐƠN</TicketCategory>
-          <Price>{movie.child_price} VNĐ</Price>
+          <Price>{movie.adult_price} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setAdultTicketCount(Math.max(adultTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{adultTicketCount}</QuantityDisplay>
@@ -338,9 +405,9 @@ function MovieDetailComponent({movie, idParams}) {
           </QuantityContainer>
         </TicketBox>
         <TicketBox>
-          <TicketType>NGƯỜI LỚN</TicketType>
-          <TicketCategory>ĐÔI</TicketCategory>
-          <Price>{movie.adult_price} VNĐ</Price>
+          <TicketType>TRẺ CON</TicketType>
+          <TicketCategory>Đơn</TicketCategory>
+          <Price>{movie.child_price} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setChildTicketCount(Math.max(childTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{childTicketCount}</QuantityDisplay>
@@ -372,42 +439,22 @@ function MovieDetailComponent({movie, idParams}) {
         ))}
       </Seating>
     </Container>}
-    {/* <div style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'}}>
-    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-    <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-          <ComboComponent image="https://api-website.cinestar.com.vn/media/.thumbswysiwyg/pictures/PICCONNEW/CNS034_COMBO_PARTY.png?rand=1723084117"
-          title="COMBO SOLO"
-          description="1 Bắp Ngọt 60oz + 1 Coke 32oz"
-          price="84,000" />
-    </div> */}
+    {selectedShowtime!== 0 && <div style={{marginBottom:'200px', display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'}}>
+    {combos.map((combo, index) => (
+  <ComboComponent
+    key={index}
+    combo_id={combo.id} // id của combo
+    image={combo.avt_url}
+    title={combo.name}
+    description={combo.description}
+    price={combo.price}
+    onQuantityChange={handleQuantityChangeCombo} // Truyền hàm quản lý số lượng
+  />
+))}
+    </div>}
     {selectedTheaterId && <FooterTicketInfo cinemaName={nameCinema} nameMovie={movie.title} amountAdult={adultTicketCount} 
-    amountChild={childTicketCount} totalPrice={totalPrice} seats={seats} selectedSeats={selectedSeats} showtime_hour={showtime_hour} /> }
+    amountChild={childTicketCount} totalPrice={totalPrice} seats={seats} selectedSeats={selectedSeats} showtime_hour={showtime_hour}
+    screen={screen} selectedCombos={selectedCombos}/> }
     
     </div>
   )
