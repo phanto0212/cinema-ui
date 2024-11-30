@@ -83,4 +83,8 @@ export const BookButton = styled.button`
   
   text-align: center;
   margin: 0 5px;
+  &:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
 `;

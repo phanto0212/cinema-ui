@@ -126,9 +126,11 @@ function MovieDetailComponent({movie, idParams}) {
   
     setTotalPrice(ticketTotal);
     setMaxSeats(childTicketCount + adultTicketCount);
-    setSelectedSeats([]);
+    
   }, [adultTicketCount, childTicketCount, selectedCombos, movie]);
-
+     useEffect(()=>{
+      setSelectedSeats([]);
+     },[adultTicketCount, childTicketCount])
   const dates = getNextDates(5); // Lấy 5 ngày tiếp theo
   const [isModalVisible, setIsModalVisible] = useState(false);
  
@@ -454,7 +456,7 @@ function MovieDetailComponent({movie, idParams}) {
     </div>}
     {selectedTheaterId && <FooterTicketInfo cinemaName={nameCinema} nameMovie={movie.title} amountAdult={adultTicketCount} 
     amountChild={childTicketCount} totalPrice={totalPrice} seats={seats} selectedSeats={selectedSeats} showtime_hour={showtime_hour}
-    screen={screen} selectedCombos={selectedCombos}/> }
+    screen={screen} selectedCombos={selectedCombos} selectedShowtime={selectedShowtime} movie={movie} />  }
     
     </div>
   )

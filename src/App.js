@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import { routes } from './routes'
 import DefaultComponent from './components/DefaultComponent/DefaultComponent'
 import MovieDetailPage from './pages/MovieDetailPage/MovieDetailPage'
+import PaymentPage from './pages/PaymentPage/PaymentPage'
 
 export function App() {
   
@@ -24,6 +25,7 @@ export function App() {
             })
           }
           <Route path="/movie/detail/:movieId" element={<MovieDetailPage />} />
+          <Route path="/payment/:ticketId" element={<PaymentPage />} />
         </Routes>
       </Router>
       

@@ -10,6 +10,7 @@ import CardComponent from '../../components/CardComponent/CardComponent';
 import { useNavigate } from 'react-router-dom';
 import newRequest from '../../utils/request';
 import Modal from '../../components/ModalComponent/Modal';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 
 
 function Hompage() {
@@ -30,7 +31,9 @@ function Hompage() {
      fetchMovies()
   }, [])
   return (
-    <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '3000px' }}>
+    <>
+    <Snowfall />
+    <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '3500px' }}>
       <SlideComponent arrImages = {[slide0, slide1, slide2, slide3, slide4]} />
       <TitleMovie>PHIM ĐANG CHIẾU</TitleMovie>
       <div style={{marginTop: '60px',  display: 'flex',flexWrap: 'wrap', alignItems: 'center', gap: '25px'}} >
@@ -40,7 +43,9 @@ function Hompage() {
       </div>
       <button onClick={() => setIsModalOpen(true)}>Hiển thị Modal</button>
       <Modal isOpen={isModalOpen} message="oke day" onClose={() => setIsModalOpen(false)} />
+      
     </div>
+    </>
   )
 }
 
