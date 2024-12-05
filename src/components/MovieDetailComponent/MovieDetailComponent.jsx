@@ -12,6 +12,8 @@ import FooterTicketInfo from "../FooterTicketInfo/FooterTicketInfo";
 import ComboComponent from "../ComboComponent/ComboComponent";
 import { format, addDays } from "date-fns"; // Thư viện để xử lý ngày tháng
 import newRequest from "../../utils/request";
+import SockJS from "sockjs-client";
+import { Client, Stomp} from "@stomp/stompjs";
 function MovieDetailComponent({movie, idParams}) {
   const [nameCinema, setNameCinema] = useState("")
   const [totalPrice,setTotalPrice] = useState(0)
@@ -32,6 +34,34 @@ function MovieDetailComponent({movie, idParams}) {
   const [seats, setSeats] = useState([])
   const [combos, setCombos] = useState([])
   const [selectedCombos, setSelectedCombos] = useState([]);
+  const [changeBook, setChangeBook] = useState(0)
+  useEffect(() => {
+    const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
+    const stompClient = new Client({
+        webSocketFactory: () => socket,
+        debug: (str) => console.log(str), // Log WebSocket events
+    });
+
+    stompClient.onConnect = () => {
+        console.log(`Connected to WebSocket for movie ${idParams}`);
+
+        // Subscribe đến topic `/topic/payment/{ticketId}`
+        stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
+          setChangeBook(prev => prev + 1); // Đảm bảo cập nhật đúng state
+        });
+    };
+
+    stompClient.onStompError = (frame) => {
+        console.error('STOMP Error:', frame);
+    };
+
+    stompClient.activate(); // Bắt đầu kết nối
+
+    // Cleanup khi component unmount
+    return () => {
+        stompClient.deactivate();
+    };
+}, [idParams]);
   const handleTheaterSelect = (id) => {
     setSelectedTheaterId(id);  // Cập nhật ID rạp được chọn
   };
@@ -244,19 +274,21 @@ function MovieDetailComponent({movie, idParams}) {
      fetchShowtime(selectedShowtime)
      fetchCombo()
   },[idParams, selectedTheaterId, selectedDate])
-   const fetchSeats = async()=>{
-    try{
-          const reponse = await newRequest.get(`/api/seat/get/by/showtime/${selectedShowtime}`)
-          setSeats(reponse.data.seats || [])
-          setScreen(reponse.data.screen || [])
+  useEffect(() => {
+    const fetchSeats = async () => {
+        try {
+            const response = await newRequest.get(`/api/seat/get/by/showtime/${selectedShowtime}`);
+            setSeats(response.data.seats || []);
+            setScreen(response.data.screen || []);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    if (selectedShowtime) {
+        fetchSeats();
     }
-    catch(error){
-      console.error(error)
-    }
-   }
-   useEffect(()=>{
-    fetchSeats(selectedShowtime)
-   },[selectedShowtime])
+}, [selectedShowtime, changeBook]);
    useEffect(()=>{
     console.log(selectedSeats)
    },[selectedSeats])

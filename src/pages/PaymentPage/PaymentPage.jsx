@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
 import newRequest from "../../utils/request";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import SockJS from 'sockjs-client';
+import { Client, Stomp } from '@stomp/stompjs';
 // Container chính
 const Container = styled.div`
   display: flex;
@@ -116,7 +117,36 @@ const PaymentPage = () => {
     const [line_combos, setLine_combos] = useState([])
     const [screen, setScreen] = useState([])
     const [line_tickets, setLine_tickets] = useState([])
-    const fetchInfoTicket = async(id)=>{
+    const [ticket, setTicket] = useState([])
+    const Navigate = useNavigate()
+    useEffect(() => {
+      const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
+      const stompClient = new Client({
+          webSocketFactory: () => socket,
+          debug: (str) => console.log(str), // Log WebSocket events
+      });
+
+      stompClient.onConnect = () => {
+          console.log(`Connected to WebSocket for ticket ${id}`);
+
+          // Subscribe đến topic `/topic/payment/{ticketId}`
+          stompClient.subscribe(`/topic/payment/${id}`, (message) => {
+              alert(`Notification: ${message.body}`);
+          });
+      };
+
+      stompClient.onStompError = (frame) => {
+          console.error('STOMP Error:', frame);
+      };
+
+      stompClient.activate(); // Bắt đầu kết nối
+
+      // Cleanup khi component unmount
+      return () => {
+          stompClient.deactivate();
+      };
+  }, [id]);
+    const fetchInfoTicket = async()=>{
         try{
            const reponse = await newRequest.post(`/api/ticket/get/info/${id}`)
            setMovie(reponse.data.movie || [])
@@ -125,11 +155,24 @@ const PaymentPage = () => {
            setScreen(reponse.data.screen || [])
            setLine_tickets(reponse.data.line_tickets || [])
            setCinema(reponse.data.cinema || [])
+           setTicket(reponse.data.ticket || [])
         }
         catch(error){
             console.log(error)
         }
     }
+    useEffect(()=>{
+      fetchInfoTicket()
+    }, [])
+    const handlePayment = async (price, TicketId, userId) => {
+      try {
+          const response = await newRequest.get(`/api/v1/payment/vn-pay?amount=${price}&bankCode=NCB&bookingId=${TicketId}&userId=${userId}`);
+          const paymentUrl = response.data.data.paymentUrl;
+          window.open(paymentUrl, '_blank');
+      } catch (error) {
+          console.log('error', error);
+      }
+  };
   return (
     <div>
         <HeaderComponent />
@@ -153,19 +196,26 @@ const PaymentPage = () => {
           <TicketDetails>
             <p><strong>Phim:</strong> {movie.title}</p>
             <p><strong>Rạp:</strong> {cinema.name}</p>
-            <p><strong>Thời gian:</strong> {showtime.time_show}-{showtime.day_show}</p>
+            <p><strong>Thời gian:</strong> {showtime.time_show} ngày {showtime.day_show}</p>
             <p><strong>Phòng chiếu:</strong> {screen.screen_number}</p>
             <p><strong>Số vé:</strong> {line_tickets.length}</p>
             <p><strong>Loại vé:</strong> Người Lớn</p>
             <p><strong>Loại ghế:</strong> Ghế Thường</p>
-            <p><strong>Số ghế:</strong> {line_tickets.map((seat,index)=>(<span>{seat}</span>))}</p>
-            <p><strong>Bắp nước:</strong> 3 Combo Couple</p>
-            <p><strong>Số tiền cần thanh toán:</strong> <span style={{ color: "yellow", fontWeight: 'bold' }}>462,000 VND</span></p>
+            <p><strong>Số ghế:</strong> {line_tickets.map((seat,index)=>(<span key={index} >{seat} ,</span>))}</p>
+            <p>
+  <strong>Bắp nước:</strong>
+  {line_combos.length > 0 
+    ? line_combos.map((combo, index) => (
+        <span key={index}>{combo.name} x{combo.quantity}, </span>
+      ))
+    : "Không có combo nao ca"}
+</p>
+            <p><strong>Số tiền cần thanh toán:</strong> <span style={{ color: "yellow", fontWeight: 'bold' }}>{ticket.price} VND</span></p>
           </TicketDetails>
 
           <Footer>
-            <Button>Quay Lại</Button>
-            <Button>Thanh Toán</Button>
+            <Button onClick={()=>Navigate("/")}>Quay Lại</Button>
+            <Button onClick={()=>handlePayment(ticket.price, ticket.ticket_id, ticket.user_id)}>Thanh Toán</Button>
           </Footer>
         </TicketInfoSection>
       </Container>

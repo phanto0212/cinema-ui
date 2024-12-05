@@ -28,7 +28,8 @@ function FooterTicketInfo({
             countAdult:amountAdult,
             countChild:amountChild,
             seatIds: selectedSeats,
-            comboIds: selectedCombos
+            comboIds: selectedCombos,
+            totalPrice: totalPrice
         
         },
         {
@@ -47,7 +48,7 @@ function FooterTicketInfo({
       
     }
   };
-  let isConfirmButtonDisabled = (amountAdult + amountChild) !== selectedSeats.length;
+  let isConfirmButtonDisabled = (amountAdult + amountChild) !== selectedSeats.length || totalPrice == 0;
 
   const handleConfirmed = () => {
     // Logic khi nhấn "ĐẶT VÉ"
