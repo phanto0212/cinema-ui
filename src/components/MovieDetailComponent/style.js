@@ -9,7 +9,7 @@ export const MovieHeaderName = styled.h1`
 font-family: "Serif", sans-serif;
 font-size : 2.5rem;
 color: #fff;
-margin-top: 15px;
+margin-top: -7px;
 `;
 export const Overlay = styled.div`
   width: 100%;
@@ -32,8 +32,8 @@ export const MovieDescriptionName = styled.h1`
 font-family: "Serif", sans-serif;
 font-size : 1.5rem;
 color: #fff;
-margin-top: 15px;
-margin-bottom: 30px;
+margin-top: 12px;
+margin-bottom: 12px;
 `;
 export const MovieDescription = styled.p`
 font-family: "Fantasy", sans-serif;
@@ -195,7 +195,7 @@ export const Select = styled.select`
   padding: 0.7em 3em;
   border: 2px solid #ffd700;
   border-radius: 5px;
-  background:#0F172A;
+  background:#292e5d;
   color: #fff;
 `;
 

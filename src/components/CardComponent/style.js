@@ -8,7 +8,7 @@ export const StyledCard = styled(Card)`
   overflow: hidden;
   border-radius: 8px;
   border:none;
-  background-color:#0f172a;
+  background-color:#292e5d;
   // #050912
 //   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
@@ -103,6 +103,7 @@ text-decoration: underline;
 font-size: 1.2rem;
 color: #fff;
 margin-left: 4px;
+margin-top: 3px;
 `;
 export const LinkButton = styled.a`
   position: relative;
@@ -125,6 +126,8 @@ export const ContainerButton = styled.div`
   width: 110px;
   cursor: pointer;
   margin-left: 5px;
+  margin-right: 4px;
+  margin-bottom: 4px;
   overflow: hidden; /* Đảm bảo gradient không tràn ra ngoài */
   background-color: #F3EA28;
   

@@ -1,4 +1,5 @@
 import Hompage from "../pages/HomePage/Hompage";
+import InfoPage from "../pages/InfoPage/InfoPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import MovieAllPage from "../pages/MovieAllPage/MovieAllPage";
 import MovieOnSchedulePage from "../pages/MovieOnSchedulePage/MovieOnSchedulePage";
@@ -43,6 +44,11 @@ export const routes = [
     {
         path: '/all/movie',
         page: MovieAllPage,
+        isShowHeader: true
+    },
+    {
+        path: '/my/info',
+        page: InfoPage,
         isShowHeader: true
     },
     {

@@ -1,15 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ContainerTitle, KindSelect, Movietitle, Wrapper } from './style';
+import CardComponent from '../../components/CardComponent/CardComponent';
+import newRequest from '../../utils/request';
+import { useNavigate } from 'react-router-dom';
 
 function MovieAllPage() {
+    const Navigate = useNavigate()
     const [selectedType, setSelectedType] = useState("now_showing");
-
+    const [movies, setMovies] = useState([])
     const handleChange = (e) => {
       setSelectedType(e.target.value);
       // Call API or handle data fetch based on selected option here
     };
+    const fetchMovie = async()=>{
+      try{
+          const reponse = await newRequest.get('/api/movie/all');
+          setMovies(reponse.data.movies || [])
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+    useEffect(()=>{
+      fetchMovie() 
+    },[])
   return (
-    <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '4000px', marginTop: '91.5px' }}>
+    <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '4000px', marginTop: '91.5px' }}>
        <Wrapper>
           <ContainerTitle>
              <Movietitle>PHIM ĐANG CHIẾU</Movietitle>
@@ -19,6 +35,12 @@ function MovieAllPage() {
              </KindSelect>
           </ContainerTitle>
        </Wrapper>
+       <div style={{marginTop: '20px',  display: 'flex',flexWrap: 'wrap', alignItems: 'center', gap: '25px'}} >
+        {movies.map((movie, index) =>(
+          <CardComponent movie={movie} key={index} onClick={()=> Navigate(`/movie/detail/${movie.id}`)} ></CardComponent>
+        ))}
+      </div>
+
     </div>
   )
 }

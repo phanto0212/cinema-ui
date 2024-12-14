@@ -21,10 +21,13 @@ function MovieDetailPage() {
     useEffect(()=>{
       fetchMovie()
     }, [id])
+    useEffect(() => {
+      window.scrollTo(0, 0); // Cuộn về đầu trang
+    }, []);
   return (
     <div >
         <HeaderComponent/>
-        <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '5000px', marginTop: '91.5px' }}>
+        <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '5000px', marginTop: '91.5px' }}>
           <MovieDetailComponent movie={movie} idParams={id}/>
         </div>
     </div>

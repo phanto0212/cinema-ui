@@ -28,7 +28,7 @@ function MovieDetailComponent({movie, idParams}) {
   const [adultTicketCount, setAdultTicketCount] = useState(0);
   const [childTicketCount, setChildTicketCount] = useState(0);
   const [maxSeats,setMaxSeats] = useState(0)
-  const [selectedTheaterId, setSelectedTheaterId] = useState(null);  // State để lưu id rạp được chọn
+  const [selectedTheaterId, setSelectedTheaterId] = useState(0);  // State để lưu id rạp được chọn
   const [cinemas, setCinemas] = useState([])
   const [showtime, setShowtime] = useState([])
   const [seats, setSeats] = useState([])
@@ -406,7 +406,7 @@ function MovieDetailComponent({movie, idParams}) {
           </div>
         </TheaterInfo>
       ))) : (
-        <p>Không có rạp chiếu</p>
+        <p style={{color: '#999'}} >Không có rạp chiếu</p>
       )}
         </div>
         {selectedTheaterId !== 0 && <TitleTicket style={{margin: '70px 0 20px 0'}}>CHỌN GIỜ CHIẾU</TitleTicket>}

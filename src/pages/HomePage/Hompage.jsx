@@ -30,10 +30,13 @@ function Hompage() {
   useEffect(()=>{
      fetchMovies()
   }, [])
+  useEffect(() => {
+  window.scrollTo(0, 0); // Cuộn về đầu trang
+}, []);
   return (
     <>
     <Snowfall />
-    <div style={{padding: '0 120px', backgroundColor: '#0f172a',height: '3500px' }}>
+    <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '3500px' }}>
       <SlideComponent arrImages = {[slide0, slide1, slide2, slide3, slide4]} />
       <TitleMovie>PHIM ĐANG CHIẾU</TitleMovie>
       <div style={{marginTop: '60px',  display: 'flex',flexWrap: 'wrap', alignItems: 'center', gap: '25px'}} >

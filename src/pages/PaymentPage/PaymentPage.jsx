@@ -118,12 +118,13 @@ const PaymentPage = () => {
     const [screen, setScreen] = useState([])
     const [line_tickets, setLine_tickets] = useState([])
     const [ticket, setTicket] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const Navigate = useNavigate()
     useEffect(() => {
       const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
       const stompClient = new Client({
           webSocketFactory: () => socket,
-          debug: (str) => console.log(str), // Log WebSocket events
+          debug: (str) => console.log('WebSocket Log:', str), // Log WebSocket events
       });
 
       stompClient.onConnect = () => {
@@ -131,7 +132,8 @@ const PaymentPage = () => {
 
           // Subscribe đến topic `/topic/payment/{ticketId}`
           stompClient.subscribe(`/topic/payment/${id}`, (message) => {
-              alert(`Notification: ${message.body}`);
+              
+              alert(`Notification: ${message}`);
           });
       };
 
@@ -143,7 +145,9 @@ const PaymentPage = () => {
 
       // Cleanup khi component unmount
       return () => {
-          stompClient.deactivate();
+          if (stompClient.active) {
+              stompClient.deactivate();
+          }
       };
   }, [id]);
     const fetchInfoTicket = async()=>{
@@ -161,6 +165,9 @@ const PaymentPage = () => {
             console.log(error)
         }
     }
+    useEffect(() => {
+      window.scrollTo(0, 0); // Cuộn về đầu trang
+    }, []);
     useEffect(()=>{
       fetchInfoTicket()
     }, [])
@@ -176,7 +183,7 @@ const PaymentPage = () => {
   return (
     <div>
         <HeaderComponent />
-    <div  style={{backgroundColor:'#141e30', height:'1000px', marginTop:'91.5px'}}>
+    <div  style={{backgroundColor:'#292e5d', height:'700px', marginTop:'91.5px'}}>
       <Container>
         {/* Phần thanh toán */}
         <PaymentSection>
@@ -208,7 +215,7 @@ const PaymentPage = () => {
     ? line_combos.map((combo, index) => (
         <span key={index}>{combo.name} x{combo.quantity}, </span>
       ))
-    : "Không có combo nao ca"}
+    : "Không có combo nào cả"}
 </p>
             <p><strong>Số tiền cần thanh toán:</strong> <span style={{ color: "yellow", fontWeight: 'bold' }}>{ticket.price} VND</span></p>
           </TicketDetails>
