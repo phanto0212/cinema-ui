@@ -3,6 +3,7 @@ import HeaderComponent from '../../components/HeaderComponent/HeaderComponent'
 import MovieDetailComponent from '../../components/MovieDetailComponent/MovieDetailComponent'
 import newRequest from '../../utils/request'
 import { useParams } from 'react-router-dom'
+import Snowfall from '../../components/SnowComponent/Snowfall'
 
 function MovieDetailPage() {
     const [movie, setMovie] = useState([])
@@ -25,12 +26,15 @@ function MovieDetailPage() {
       window.scrollTo(0, 0); // Cuộn về đầu trang
     }, []);
   return (
+    <>
+    <Snowfall/>
     <div >
         <HeaderComponent/>
         <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '5000px', marginTop: '91.5px' }}>
           <MovieDetailComponent movie={movie} idParams={id}/>
         </div>
     </div>
+    </>
   )
 }
 

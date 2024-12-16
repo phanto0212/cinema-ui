@@ -3,6 +3,7 @@ import { ContainerTitle, KindSelect, Movietitle, Wrapper } from './style';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import newRequest from '../../utils/request';
 import { useNavigate } from 'react-router-dom';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 
 function MovieAllPage() {
     const Navigate = useNavigate()
@@ -25,6 +26,8 @@ function MovieAllPage() {
       fetchMovie() 
     },[])
   return (
+    <>
+    <Snowfall/>
     <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '4000px', marginTop: '91.5px' }}>
        <Wrapper>
           <ContainerTitle>
@@ -42,6 +45,8 @@ function MovieAllPage() {
       </div>
 
     </div>
+    </>
+   
   )
 }
 

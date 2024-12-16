@@ -4,6 +4,7 @@ import SideBarCoponent from '../../components/SideBarComponent/SideBarCoponent';
 import CustomerInfoCoponent from '../../components/CustomerInfoComponent/CustomerInfoCoponent';
 import ChangePasswordCoponent from '../../components/ChangePasswordComponent/ChangePasswordCoponent';
 import newRequest from '../../utils/request';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 const AppContainer = styled.div`
   display: flex;
   background-color: #1a1a2e;
@@ -36,6 +37,8 @@ function InfoPage() {
     }
   };
   return (
+    <>
+    <Snowfall />
     <div style={{marginTop:'91.5px'}}>
   <AppContainer>
     <SideBarCoponent />
@@ -46,6 +49,8 @@ function InfoPage() {
     </Content>
   </AppContainer>
     </div>
+    </>
+    
   )
 }
 

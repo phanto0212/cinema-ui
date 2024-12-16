@@ -77,7 +77,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #0f172a;
+  background: #292e5d;
   min-height: 100vh;
   color: #fff;
   padding-top: 100px;

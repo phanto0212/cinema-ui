@@ -5,6 +5,9 @@ import newRequest from "../../utils/request";
 import { useNavigate, useParams } from "react-router-dom";
 import SockJS from 'sockjs-client';
 import { Client, Stomp } from '@stomp/stompjs';
+import Snowfall from "../../components/SnowComponent/Snowfall";
+import Modal from "../../components/ModalComponent/Modal";
+import { message } from "antd";
 // Container chính
 const Container = styled.div`
   display: flex;
@@ -119,7 +122,32 @@ const PaymentPage = () => {
     const [line_tickets, setLine_tickets] = useState([])
     const [ticket, setTicket] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [header, setHeader] = useState('')
+    const [message, setMessage] = useState('')
+    const [handleOnClose, setHandleOnClose] = useState(null)
     const Navigate = useNavigate()
+    const fetchInfoTicket = async()=>{
+      try{
+         const reponse = await newRequest.post(`/api/ticket/get/info/${id}`)
+         setMovie(reponse.data.movie || [])
+         setShowtime(reponse.data.showtime || [])
+         setLine_combos(reponse.data.line_combos || [])
+         setScreen(reponse.data.screen || [])
+         setLine_tickets(reponse.data.line_tickets || [])
+         setCinema(reponse.data.cinema || [])
+         setTicket(reponse.data.ticket || [])
+      }
+      catch(error){
+          console.log(error)
+      }
+  }
+  useEffect(() => {
+    window.scrollTo(0, 0); // Cuộn về đầu trang
+  }, []);
+  useEffect(()=>{
+    fetchInfoTicket()
+  }, [])
+
     useEffect(() => {
       const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
       const stompClient = new Client({
@@ -132,8 +160,36 @@ const PaymentPage = () => {
 
           // Subscribe đến topic `/topic/payment/{ticketId}`
           stompClient.subscribe(`/topic/payment/${id}`, (message) => {
-              
-              alert(`Notification: ${message}`);
+            const response = message.body; // Xử lý message payload
+
+      if (response === "success") {
+
+         setHeader('Thông báo')
+         setMessage('Vé của bạn đã thanh toán thành công :))')
+         setIsModalOpen(true)
+         setHandleOnClose(() => {
+          return () => {
+            setIsModalOpen(false);
+            Navigate(`/my/ticket`);
+          };
+        });
+         
+        
+        
+      } else if (response === "fail") {
+        setHeader('Thông báo')
+        setMessage('Không có tiền cũng bày đặt đặt vé à! Cút ra ngoài ')
+        setIsModalOpen(true)
+        console.log(movie)
+        setHandleOnClose(() => {
+          return () => {
+            setIsModalOpen(false);
+            Navigate(`/movie/detail/${movie.id}`);
+          };
+        });
+      } else {
+        console.warn("Thông báo không xác định:", response);
+      }
           });
       };
 
@@ -150,27 +206,7 @@ const PaymentPage = () => {
           }
       };
   }, [id]);
-    const fetchInfoTicket = async()=>{
-        try{
-           const reponse = await newRequest.post(`/api/ticket/get/info/${id}`)
-           setMovie(reponse.data.movie || [])
-           setShowtime(reponse.data.showtime || [])
-           setLine_combos(reponse.data.line_combos || [])
-           setScreen(reponse.data.screen || [])
-           setLine_tickets(reponse.data.line_tickets || [])
-           setCinema(reponse.data.cinema || [])
-           setTicket(reponse.data.ticket || [])
-        }
-        catch(error){
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-      window.scrollTo(0, 0); // Cuộn về đầu trang
-    }, []);
-    useEffect(()=>{
-      fetchInfoTicket()
-    }, [])
+    
     const handlePayment = async (price, TicketId, userId) => {
       try {
           const response = await newRequest.get(`/api/v1/payment/vn-pay?amount=${price}&bankCode=NCB&bookingId=${TicketId}&userId=${userId}`);
@@ -181,6 +217,8 @@ const PaymentPage = () => {
       }
   };
   return (
+    <>
+    <Snowfall/>
     <div>
         <HeaderComponent />
     <div  style={{backgroundColor:'#292e5d', height:'700px', marginTop:'91.5px'}}>
@@ -227,7 +265,10 @@ const PaymentPage = () => {
         </TicketInfoSection>
       </Container>
     </div>
+    <Modal isOpen={isModalOpen} header={header} message={message} onClose={handleOnClose}/>
     </div>
+    </>
+    
   );
 };
 

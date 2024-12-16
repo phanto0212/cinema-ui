@@ -5,6 +5,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import newRequest from '../../utils/request';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 // Container tổng thể cho giao diện đăng nhập
 const Container = styled.div`
   display: flex;
@@ -154,6 +155,8 @@ function LoginPage() {
     }
 };
   return (
+    <>
+    <Snowfall/>
     <Container>
       <LoginBox>
         <Title>ĐĂNG NHẬP</Title>
@@ -189,6 +192,8 @@ function LoginPage() {
       </LoginBox>
       <ToastContainer style={{fontSize: '12px'}}/>
     </Container>
+    </>
+    
   );
 }
 

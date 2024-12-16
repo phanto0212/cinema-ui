@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import YouTube from "react-youtube";
 import { CloseOutlined } from '@ant-design/icons';
 import { 
@@ -15,6 +15,7 @@ import {
   ViewTrailer 
 } from "./style";
 import { useNavigate } from "react-router-dom";
+import newRequest from "../../utils/request";
 
 
 function CardComponent({movie, onClick}) {
@@ -28,13 +29,13 @@ function CardComponent({movie, onClick}) {
   function CardComponent({ movie, onClick }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const playerRef = useRef(null);
-
   const showModal = () => {
     setIsModalVisible(true);
     if (playerRef.current) {
       playerRef.current.internalPlayer.seekTo(0);
     }
   };
+
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -65,11 +66,11 @@ function CardComponent({movie, onClick}) {
         />
       }
     >
-      <Overlay>
+      <Overlay onClick={()=> Navigate('/')}>
         <NameCard>{movie.title}</NameCard>
         <CardDetail><span style={{ color: '#F3EA28' }}>Thể loại: </span>{movie.kind}</CardDetail>
         <CardDetail><span style={{ color: '#F3EA28' }}>Tác giả: </span>{movie.director}</CardDetail>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>8.5/10</CardDetail>
+        <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>8,5/10</CardDetail>
         <CardDetail><span style={{ color: '#F3EA28' }}>Thời lượng: </span>{movie.duration}'</CardDetail>
       </Overlay>
       <NameCardHeader>{movie.title.length >23 ? `${movie.title.substring(0, 30)}...` : movie.title}</NameCardHeader>
@@ -108,7 +109,21 @@ function CardComponent({movie, onClick}) {
     </StyledCard>
   );
 }
-
+const [rate, setRate] = useState('chưa có đánh giá nào')
+const fetchRate =  async(movieId)=>{
+  try{
+     const reponse = await newRequest.get(`/api/rate/get/rate/${movieId}`)
+     if(reponse.status==200 && reponse.data.rate != 0){
+      setRate(reponse.data.rate)
+     }
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+useEffect(()=>{
+  fetchRate(movie.id)
+},[])
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -140,18 +155,18 @@ function CardComponent({movie, onClick}) {
       hoverable
       cover={
         <img
-          onClick={onClick}
+         onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}}
           alt="Movie Poster"
           src={movie.poster_url}
           style={{ width: "400px", height: "355px", objectFit: "cover" }}
         />
       }
     >
-      <Overlay>
+      <Overlay onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}}>
         <NameCard>{movie.title}</NameCard>
         <CardDetail><span style={{ color: '#F3EA28' }}>Thể loại: </span>{movie.kind}</CardDetail>
         <CardDetail><span style={{ color: '#F3EA28' }}>Tác giả: </span>{movie.director}</CardDetail>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>8.5/10</CardDetail>
+        <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>{rate == 'chưa có đánh giá nào' ? rate : <>{rate}/10</>}</CardDetail>
         <CardDetail><span style={{ color: '#F3EA28' }}>Thời lượng: </span>{movie.duration}'</CardDetail>
       </Overlay>
       <NameCardHeader>{movie.title.length > 20 ? `${movie.title.substring(0, 18)}...` : movie.title}</NameCardHeader>

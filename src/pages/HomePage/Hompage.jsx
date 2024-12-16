@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import newRequest from '../../utils/request';
 import Modal from '../../components/ModalComponent/Modal';
 import Snowfall from '../../components/SnowComponent/Snowfall';
+import MovieRating from '../../components/RatingComponent/RatingComponent';
+import MovieApp from '../../components/MovieAppComponent/MovieApp';
 
 
 function Hompage() {

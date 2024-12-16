@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBarComponent from '../../components/SideBarComponent/SideBarCoponent';
 import styled from 'styled-components';
+import Snowfall from '../../components/SnowComponent/Snowfall';
+import newRequest from '../../utils/request';
 
 const AppContainer = styled.div`
   display: flex;
-  background-color: #1a1a2e;
+  background: #292e5d;
   color: white;
   min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
 `;
 
 const Content = styled.div`
@@ -15,39 +18,46 @@ const Content = styled.div`
 `;
 
 const Title = styled.h2`
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 28px;
   text-align: center;
+  font-weight: 600;
+  color: #ffdd57;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
 const TicketList = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 `;
 
 const TicketCard = styled.div`
-  background-color: #162447;
-  border-radius: 10px;
+  background: #162447;
+  border-radius: 12px;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const TicketInfo = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
 
   span {
     font-weight: bold;
+    color: #ffdd57;
   }
 `;
 
 const ComboInfo = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   background-color: #1f4068;
   padding: 10px;
   border-radius: 8px;
@@ -55,6 +65,7 @@ const ComboInfo = styled.div`
   h4 {
     margin: 0 0 10px 0;
     font-size: 16px;
+    color: #ffdd57;
   }
 
   ul {
@@ -64,100 +75,113 @@ const ComboInfo = styled.div`
 
     li {
       font-size: 14px;
+      color: #e4e4e4;
       margin-bottom: 5px;
     }
   }
 `;
 
 const Actions = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   gap: 10px;
 
   button {
-    padding: 10px 20px;
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.3s, transform 0.2s;
 
     &.cancel {
       background-color: #e63946;
       color: white;
+
+      &:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+      }
     }
 
     &.details {
       background-color: #1f7a8c;
       color: white;
+
+      &:hover {
+        background-color: #135d6e;
+        transform: scale(1.05);
+      }
     }
   }
 `;
 
 function MyTicketPage() {
-  // Fake data
-  const tickets = [
-    {
-      id: 1,
-      movieName: 'Avatar 2',
-      date: '12/12/2024',
-      time: '19:00',
-      cinema: 'CGV - Phòng 3',
-      seats: ['A1', 'A2'],
-      price: '200.000 VNĐ',
-      combos: [
-        { name: 'Combo 1', items: ['1 Bắp rang', '1 Nước ngọt'] },
-        { name: 'Combo 2', items: ['1 Nachos', '2 Nước ngọt'] },
-      ],
-    },
-    {
-      id: 2,
-      movieName: 'Spider-Man: No Way Home',
-      date: '15/12/2024',
-      time: '17:00',
-      cinema: 'Lotte - Phòng 5',
-      seats: ['B5', 'B6'],
-      price: '180.000 VNĐ',
-      combos: [{ name: 'Combo 3', items: ['1 Bắp rang lớn', '1 Trà sữa'] }],
-    },
-  ];
+  const [tickets, setTickets] = useState([]);
+  const token = localStorage.getItem('authToken');
+
+  const fetchTicket = async (token) => {
+    try {
+      const response = await newRequest.post('/api/ticket/get/all/ticket/user', {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTickets(response.data.tickets || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-        window.scrollTo(0, 0); // Cuộn về đầu trang
-      }, []);
+    if (token) fetchTicket(token);
+    window.scrollTo(0, 0); // Cuộn về đầu trang
+  }, [token]);
 
   return (
-    <div style={{ marginTop: '91.5px' }}>
-      <AppContainer>
-        <SideBarComponent />
-        <Content>
-          <Title>Danh sách vé đã đặt</Title>
-          <TicketList>
-            {tickets.map((ticket) => (
-              <TicketCard key={ticket.id}>
-                <TicketInfo>
-                  <div>🎬 <span>{ticket.movieName}</span></div>
-                  <div>📅 <span>{ticket.date}</span> - 🕒 <span>{ticket.time}</span></div>
-                  <div>🎭 <span>{ticket.cinema}</span></div>
-                  <div>💺 Ghế: <span>{ticket.seats.join(', ')}</span></div>
-                  <div>💵 Tổng giá: <span>{ticket.price}</span></div>
-                </TicketInfo>
-                <ComboInfo>
-                  <h4>Combo đã đặt:</h4>
-                  <ul>
-                    {ticket.combos.map((combo, index) => (
-                      <li key={index}>- {combo.name}: {combo.items.join(', ')}</li>
-                    ))}
-                  </ul>
-                </ComboInfo>
-                <Actions>
-                  <button className="cancel">Hủy vé</button>
-                  <button className="details">Xem chi tiết</button>
-                </Actions>
-              </TicketCard>
-            ))}
-          </TicketList>
-        </Content>
-      </AppContainer>
-    </div>
+    <>
+      <Snowfall />
+      <div style={{ marginTop: '91.5px' }}>
+        <AppContainer>
+          <SideBarComponent />
+          <Content>
+            <Title>🎟 Danh sách vé đã đặt 🎟</Title>
+            <TicketList>
+              {tickets.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#ccc' }}>Chưa có vé nào được đặt!</p>
+              ) : (
+                tickets.map((ticket) => (
+                  <TicketCard key={ticket.ticket_id}>
+                    <TicketInfo>
+                      <div>🎬 <span>{ticket.movie.title}</span></div>
+                      <div>📅 <span>{ticket.showtime.day_show}</span> - 🕒 <span>{ticket.showtime.time_show}</span></div>
+                      <div>🎭 <span>{ticket.cinema.name}</span></div>
+                      <div>💺 Ghế: <span>{ticket.listNameSeat.join(', ')}</span></div>
+                      <div>
+  💵 Tổng giá: <span>{ticket.ticket.price ? ticket.ticket.price.toLocaleString() : 0} đ</span>
+</div>
+                    </TicketInfo>
+                    <ComboInfo>
+                      <h4>🍿 Combo đã đặt:</h4>
+                      <ul>
+                        {ticket.combo_ticket.map((combo, index) => (
+                          <li key={index}>
+                            - {combo.name}: {combo.quantity} x {combo.price} đ
+                          </li>
+                        ))}
+                      </ul>
+                    </ComboInfo>
+                    <Actions>
+                      <button className="cancel">Hủy vé</button>
+                      <button className="details">Xem chi tiết</button>
+                    </Actions>
+                  </TicketCard>
+                ))
+              )}
+            </TicketList>
+          </Content>
+        </AppContainer>
+      </div>
+    </>
   );
 }
 

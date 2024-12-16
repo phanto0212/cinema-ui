@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import newRequest from '../../utils/request';
 
 import 'react-toastify/dist/ReactToastify.css';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -132,6 +133,8 @@ function SignUpPage() {
 };
 
   return (
+    <>
+    <Snowfall/>
     <Container>
     <RegisterBox>
       <Title>ĐĂNG KÝ</Title>
@@ -153,6 +156,8 @@ function SignUpPage() {
     </RegisterBox>
     <ToastContainer style={{fontSize: '12px'}}/>
   </Container>
+    </>
+    
   )
 }
 

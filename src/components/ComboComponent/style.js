@@ -20,7 +20,7 @@ export const ComboContainer = styled.div`
 `;
 
 export const ComboCard = styled.div`
-  background-color: #1c1e2e;
+  background-color: #292e5d;
   padding: 20px;
   width: 250px;
   border-radius: 10px;

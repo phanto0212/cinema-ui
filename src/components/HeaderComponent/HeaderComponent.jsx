@@ -34,15 +34,22 @@ function HeaderComponent() {
     }
   };
 
-  const handleToCart = () => {
+  const handleToInfo = () => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      navigate('/order');
+      navigate('/my/info');
     } else {
-      navigate('/sign-in');
+      navigate('/login');
     }
   };
-
+  const handleToTicket = () =>{
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      navigate('/my/ticket');
+    } else {
+      navigate('/loginlogin');
+    }
+  }
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setIsLoggedIn(false);
@@ -51,7 +58,7 @@ function HeaderComponent() {
 
   const userMenu = (
     <Menu>
-      <Menu.Item onClick={() => navigate('/profile')} key="1">
+      <Menu.Item onClick={() => navigate('/my/info')} key="1">
         Quản lý trang cá nhân
       </Menu.Item>
       <Menu.Item onClick={handleLogout} key="2">
@@ -75,14 +82,14 @@ function HeaderComponent() {
                 <Icon icon={faTicketAlt} size="1x" /> Đặt vé
               </LinkButton>
             </ContainerButton>
-            <ContainerButton onClick={() => navigate('/my/ticket')} style={{ backgroundColor: '#ff7401' }}>
+            <ContainerButton onClick={() => handleToTicket()} style={{ backgroundColor: '#ff7401' }}>
               <LinkButton style={{ color: '#fff' }}>
                 <Icon icon={faPizzaSlice} size="1x" /> Vé của tôi
               </LinkButton>
             </ContainerButton>
-            <ContainerButton style={{ backgroundColor: '#ff7401' }}>
+            <ContainerButton onClick={()=>handleToInfo()} style={{ backgroundColor: '#ff7401' }}>
               <LinkButton style={{ color: '#fff' }}>
-                <Icon icon={faMapMarkerAlt} size="1x" /> Lịch chiếu
+                <Icon icon={faMapMarkerAlt} size="1x" /> About me
               </LinkButton>
             </ContainerButton>
           </Container>

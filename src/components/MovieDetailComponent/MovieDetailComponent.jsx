@@ -14,6 +14,7 @@ import { format, addDays } from "date-fns"; // Thư viện để xử lý ngày 
 import newRequest from "../../utils/request";
 import SockJS from "sockjs-client";
 import { Client, Stomp} from "@stomp/stompjs";
+import MovieApp from "../MovieAppComponent/MovieApp";
 function MovieDetailComponent({movie, idParams}) {
   const [nameCinema, setNameCinema] = useState("")
   const [totalPrice,setTotalPrice] = useState(0)
@@ -35,6 +36,21 @@ function MovieDetailComponent({movie, idParams}) {
   const [combos, setCombos] = useState([])
   const [selectedCombos, setSelectedCombos] = useState([]);
   const [changeBook, setChangeBook] = useState(0)
+  const [rate, setRate] = useState(0)
+const fetchRate =  async(movieId)=>{
+  try{
+     const reponse = await newRequest.get(`/api/rate/get/rate/${movieId}`)
+     if(reponse.status==200 && reponse.data.rate !==0){
+      setRate(reponse.data.rate || 0)
+     }
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+useEffect(()=>{
+  fetchRate(movie.id)
+},[])
   useEffect(() => {
     const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
     const stompClient = new Client({
@@ -82,6 +98,7 @@ function MovieDetailComponent({movie, idParams}) {
     setCinemas([])
     setSelectedShowtime(0)
     setSelectedTheaterId(0)
+    setSeats([])
   }
   const handleQuantityChangeCombo = (combo_id, name, quantity, price) => {
     console.log('Price in handleQuantityChangeCombo:', combos); // Kiểm tra giá trị price
@@ -307,7 +324,7 @@ function MovieDetailComponent({movie, idParams}) {
                 <Overlay>
                   <CardDetail><span style={{ color: '#F3EA28' }}> <FontAwesomeIcon icon={faTag} style={{ marginRight: '10px' }} /> </span>{movie.kind}</CardDetail>
                   <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} /> </span>{movie.director}</CardDetail>
-                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faStar} style={{ marginRight: '10px' }} /> </span>8.5/10</CardDetail>
+                  <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faStar} style={{ marginRight: '10px' }} /> </span>{rate}/10</CardDetail>
                   <CardDetail><span style={{ color: '#F3EA28' }}><FontAwesomeIcon icon={faClock} style={{ marginRight: '10px' }} /></span>{movie.duration}'</CardDetail>
                 </Overlay>
                 <MovieDescriptionName>MÔ TẢ</MovieDescriptionName>
@@ -324,6 +341,9 @@ function MovieDetailComponent({movie, idParams}) {
                    <img style={{ marginBottom: '4px', width: '35px' }} alt="icon" src="https://cinestar.com.vn/assets/images/icon-play-vid.svg" />
                    <ViewTrailer>Xem Trailer</ViewTrailer>
                 </TrailerContainer>
+                <div style={{marginTop:'10px'}}>
+                   <MovieApp movieId={movie.id}/>
+                </div>
       <ModalCustom
         
         visible={isModalVisible} 

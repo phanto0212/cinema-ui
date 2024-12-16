@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import newRequest from '../../utils/request';
 import CardComponent from '../../components/CardComponent/CardComponent';
+import Snowfall from '../../components/SnowComponent/Snowfall';
 
 function SearchPage() {
   const [movies, setMovies] = useState([]);
@@ -35,6 +36,8 @@ function SearchPage() {
   }, [searchKey]);
 
   return (
+    <>
+    <Snowfall/>
     <div style={{ padding: '0 120px', backgroundColor: '#292e5d', height: '4000px', marginTop: '91.5px' }}>
       <div style={{ marginTop: '60px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '25px' }}>
         {error && <div style={{ color: "red", margin: "20px 0" }}>{error}</div>}
@@ -43,7 +46,7 @@ function SearchPage() {
             Không tìm thấy phim nào với từ khóa "{searchKey}".
           </div>
         )}
-        <div>
+         <div>
         {movies.length !== 0 && !error && (
           <div style={{ color: "white", textAlign: "center", marginTop: "20px" }}>
             Có {movies.length} kết quả cho từ khóa: "{searchKey}".
@@ -57,6 +60,8 @@ function SearchPage() {
         </div>
       </div>
     </div>
+    </>
+   
   );
 }
 
