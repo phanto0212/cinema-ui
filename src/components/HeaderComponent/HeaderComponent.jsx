@@ -47,7 +47,7 @@ function HeaderComponent() {
     if (token) {
       navigate('/my/ticket');
     } else {
-      navigate('/loginlogin');
+      navigate('/login');
     }
   }
   const handleLogout = () => {
@@ -72,7 +72,7 @@ function HeaderComponent() {
       <Wrapper>
         <Col span={5}>
           <WrapperHeaderText onClick={() => navigate('/')}>
-            Nhom8's Cinema
+            PhanTo's Cinema
           </WrapperHeaderText>
         </Col>
         <Col span={11}>

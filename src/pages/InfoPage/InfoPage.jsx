@@ -36,6 +36,9 @@ function InfoPage() {
       console.error('Error fetching user:', error);
     }
   };
+  useEffect(() => {
+    window.scrollTo(0, 0); // Cuộn về đầu trang
+  }, []);
   return (
     <>
     <Snowfall />
