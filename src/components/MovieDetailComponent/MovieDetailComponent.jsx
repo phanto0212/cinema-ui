@@ -50,34 +50,34 @@ const fetchRate =  async(movieId)=>{
 }
 useEffect(()=>{
   fetchRate(idParams)
-},[idParams])
-  useEffect(() => {
-    const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
-    const stompClient = new Client({
-        webSocketFactory: () => socket,
-        debug: (str) => console.log(str), // Log WebSocket events
-    });
+},[idParams]);
+//   useEffect(() => {
+//     const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
+//     const stompClient = new Client({
+//         webSocketFactory: () => socket,
+//         debug: (str) => console.log(str), // Log WebSocket events
+//     });
 
-    stompClient.onConnect = () => {
-        console.log(`Connected to WebSocket for movie ${idParams}`);
+//     stompClient.onConnect = () => {
+//         console.log(`Connected to WebSocket for movie ${idParams}`);
 
-        // Subscribe đến topic `/topic/payment/{ticketId}`
-        stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
-          setChangeBook(prev => prev + 1); // Đảm bảo cập nhật đúng state
-        });
-    };
+//         // Subscribe đến topic `/topic/payment/{ticketId}`
+//         stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
+//           setChangeBook(prev => prev + 1); // Đảm bảo cập nhật đúng state
+//         });
+//     };
 
-    stompClient.onStompError = (frame) => {
-        console.error('STOMP Error:', frame);
-    };
+//     stompClient.onStompError = (frame) => {
+//         console.error('STOMP Error:', frame);
+//     };
 
-    stompClient.activate(); // Bắt đầu kết nối
+//     stompClient.activate(); // Bắt đầu kết nối
 
-    // Cleanup khi component unmount
-    return () => {
-        stompClient.deactivate();
-    };
-}, [idParams]);
+//     // Cleanup khi component unmount
+//     return () => {
+//         stompClient.deactivate();
+//     };
+// }, [idParams]);
   const handleTheaterSelect = (id) => {
     setSelectedTheaterId(id);  // Cập nhật ID rạp được chọn
   };
