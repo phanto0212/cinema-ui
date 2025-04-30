@@ -58,13 +58,13 @@ const timeAgo = (createdAt) => {
 const CommentsList = ({ comments }) => {
   return (
     <CommentsContainer>
-      {comments.map((comment, index) => (
+      {comments.length > 0 ? comments.map((comment, index) => (
         <CommentItem key={index}>
           <Author>{comment.author}</Author>
           <Content>{comment.content}</Content>
           <Time>{timeAgo(comment.created_at)}</Time>
         </CommentItem>
-      ))}
+      )): <div style={{marginLeft: '450px'}}>Chưa có bình luận nào</div>}
     </CommentsContainer>
   );
 };

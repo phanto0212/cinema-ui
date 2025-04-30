@@ -76,7 +76,7 @@ function MovieDetailPage() {
     <Snowfall/>
     <div >
         <HeaderComponent/>
-        <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '5000px', marginTop: '91.5px' }}>
+        <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '9000px', marginTop: '91.5px' }}>
           <MovieDetailComponent movie={movie} idParams={id}/>
           <div style={{marginTop: '300px'}}>
             <Comments movie_id = {id} />

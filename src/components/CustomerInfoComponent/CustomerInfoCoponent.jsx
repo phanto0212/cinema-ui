@@ -52,7 +52,7 @@ function CustomerInfoComponent({ user }) {
   useEffect(() => {
     // Khởi tạo giá trị từ `user`
     if (user) {
-      setFullname(user.fullname || '');
+      setFullname(user.fullName || '');
       setBirthday(user.birthday || '');
       setTelephone(user.telephone || '');
       setEmail(user.email || '');

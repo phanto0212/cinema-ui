@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function InputComponent() {
   const [searchKey, setSearchKey] = useState('');
   const navigate = useNavigate();
-
+  
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && searchKey.trim()) {
       // Điều hướng sang trang search với query key

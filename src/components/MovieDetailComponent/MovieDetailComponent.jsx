@@ -41,7 +41,7 @@ const fetchRate =  async(movieId)=>{
   try{
      const reponse = await newRequest.get(`/api/rate/get/rate/${movieId}`)
      if(reponse.status==200 && reponse.data.rate !==0){
-      setRate(reponse.data.rate || 0)
+      setRate(reponse.data.rate)
      }
   }
   catch(error){
@@ -49,8 +49,8 @@ const fetchRate =  async(movieId)=>{
   }
 }
 useEffect(()=>{
-  fetchRate(movie.id)
-},[])
+  fetchRate(idParams)
+},[idParams])
   useEffect(() => {
     const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
     const stompClient = new Client({
@@ -451,7 +451,7 @@ useEffect(()=>{
         <TicketBox>
           <TicketType>NGƯỜI LỚN</TicketType>
           <TicketCategory>ĐƠN</TicketCategory>
-          <Price>{movie.adult_price} VNĐ</Price>
+          <Price>{movie.adult_price.toLocaleString("vi-VN")} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setAdultTicketCount(Math.max(adultTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{adultTicketCount}</QuantityDisplay>
@@ -461,7 +461,7 @@ useEffect(()=>{
         <TicketBox>
           <TicketType>TRẺ CON</TicketType>
           <TicketCategory>Đơn</TicketCategory>
-          <Price>{movie.child_price} VNĐ</Price>
+          <Price>{movie.child_price.toLocaleString("vi-VN")} VNĐ</Price>
           <QuantityContainer>
             <QuantityButton onClick={() => setChildTicketCount(Math.max(childTicketCount - 1, 0))}>-</QuantityButton>
             <QuantityDisplay>{childTicketCount}</QuantityDisplay>

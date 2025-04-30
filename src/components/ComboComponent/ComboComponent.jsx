@@ -23,7 +23,7 @@ function ComboComponent({ image, title, description, price, combo_id, onQuantity
       <ComboImage src={image} alt={title} />
       <ComboTitle>{title}</ComboTitle>
       <ComboDescription>{description}</ComboDescription>
-      <Price>{price} VND</Price>
+      <Price>{price.toLocaleString("vi-VN")} VND</Price>
       <QuantityControl>
         <QuantityButton onClick={handleDecrease}>-</QuantityButton>
         <span style={{ color: '#fff' }}>{quantity}</span>

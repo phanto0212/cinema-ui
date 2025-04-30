@@ -53,13 +53,13 @@ const Button = styled.button`
 `;
 
 
-function Modal({ isOpen, onClose, message }) {
+function Modal({ isOpen, onClose, message, header }) {
     if (!isOpen) return null;
 
     return (
       <Overlay>
         <ModalContainer>
-          <Title>LƯU Ý!</Title>
+          <Title>{header}</Title>
           <Message>{message}</Message>
           <Button onClick={onClose}>OK</Button>
         </ModalContainer>
