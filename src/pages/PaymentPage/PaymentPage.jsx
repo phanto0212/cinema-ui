@@ -563,7 +563,7 @@ const PaymentPage = () => {
     }, [])
 
     useEffect(() => {
-      const socket = new SockJS('http://localhost:8081/ws');
+      const socket = new SockJS('https://cinema-be-1.onrender.com/ws');
       const stompClient = new Client({
           webSocketFactory: () => socket,
           debug: (str) => console.log('WebSocket Log:', str),
