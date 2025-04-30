@@ -52,33 +52,40 @@ const fetchRate =  async(movieId)=>{
 useEffect(()=>{
   fetchRate(idParams)
 },[idParams]);
-  useEffect(() => {
+useEffect(() => {
+  const timeout = setTimeout(() => {
     const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
+
     const stompClient = new Client({
-        webSocketFactory: () => socket,
-        debug: (str) => console.log(str), // Log WebSocket events
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str), // Log WebSocket events
     });
 
     stompClient.onConnect = () => {
-        console.log(`Connected to WebSocket for movie ${idParams}`);
+      console.log(`Connected to WebSocket for movie ${idParams}`);
 
-        // Subscribe đến topic `/topic/payment/{ticketId}`
-        stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
-          setChangeBook(prev => prev + 1); // Đảm bảo cập nhật đúng state
-        });
+      // Subscribe đến topic `/topic/movie/{idParams}`
+      stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
+        setChangeBook(prev => prev + 1); // Cập nhật trạng thái khi có thay đổi
+      });
     };
 
     stompClient.onStompError = (frame) => {
-        console.error('STOMP Error:', frame);
+      console.error('STOMP Error:', frame);
     };
 
-    stompClient.activate(); // Bắt đầu kết nối
+    stompClient.activate(); // Kích hoạt kết nối
 
-    // Cleanup khi component unmount
+    // Cleanup khi component bị unmount
     return () => {
-        stompClient.deactivate();
+      stompClient.deactivate();
     };
+  }, 100); // delay 100ms
+
+  // Cleanup nếu component unmount trước timeout
+  return () => clearTimeout(timeout);
 }, [idParams]);
+
   const handleTheaterSelect = (id) => {
     setSelectedTheaterId(id);  // Cập nhật ID rạp được chọn
   };
