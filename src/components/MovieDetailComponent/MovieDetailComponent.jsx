@@ -52,7 +52,7 @@ useEffect(()=>{
   fetchRate(idParams)
 },[idParams])
   useEffect(() => {
-    const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
+    const socket = new SockJS('wss://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
     const stompClient = new Client({
         webSocketFactory: () => socket,
         debug: (str) => console.log(str), // Log WebSocket events
