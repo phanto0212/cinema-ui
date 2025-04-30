@@ -24,7 +24,8 @@ function MovieDetailComponent({movie, idParams}) {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [location, setLocation] = useState("hanoi")
   const playerRef = useRef(null);
-  const [selectedDate, setSelectedDate] = React.useState("");
+  const today = new Date().toISOString().split('T')[0]; // Lấy ngày hôm nay theo định dạng yyyy-MM-dd
+  const [selectedDate, setSelectedDate] = React.useState(today);
   const [selectedShowtime, setSelectedShowtime] = React.useState(0);
   const [adultTicketCount, setAdultTicketCount] = useState(0);
   const [childTicketCount, setChildTicketCount] = useState(0);
