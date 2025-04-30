@@ -19,12 +19,12 @@ export const routes = [
     {
         path: '/login',
         page: LoginPage,
-        isShowHeader: true
+        isShowHeader: false 
     },
     {
         path: '/signup',
         page: SignUpPage,
-        isShowHeader: true
+        isShowHeader: false
     },
     {
         path: '/movie/search',
