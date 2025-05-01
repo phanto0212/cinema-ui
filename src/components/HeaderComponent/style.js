@@ -29,6 +29,7 @@ export const Wrapper = styled(Row)`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   animation: ${fadeIn} 0.5s ease-out;
+  height: auto;
   
   @media (min-width: 1200px) {
     padding: 23px 120px;
@@ -40,13 +41,14 @@ export const Wrapper = styled(Row)`
   
   @media (max-width: 768px) {
     padding: 12px 20px;
+    height: 60px; // Set fixed height
   }
   
   @media (max-width: 480px) {
     padding: 10px 15px;
+    height: 56px; // Reduce height slightly
   }
 `;
-
 export const WrapperHeaderText = styled.span`
   font-size: 26px;
   font-weight: 700;
@@ -80,10 +82,16 @@ export const WrapperHeaderText = styled.span`
   
   @media (max-width: 768px) {
     font-size: 22px;
+    max-width: 180px; // Giới hạn chiều rộng
     
     &::before {
       font-size: 20px;
     }
+  }
+  
+  @media (max-width: 576px) {
+    font-size: 20px;
+    max-width: 140px;
   }
   
   @media (max-width: 480px) {
@@ -91,7 +99,7 @@ export const WrapperHeaderText = styled.span`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
+    max-width: 120px;
     
     &::before {
       font-size: 18px;
@@ -336,7 +344,7 @@ export const User = styled.div`
   @media (max-width: 768px) {
     position: absolute;
     top: 12px;
-    right: 70px;
+    right: 60px; // Khoảng cách đến edge
     padding: 3px 10px;
   }
   
@@ -395,13 +403,18 @@ export const SearchContainer = styled.div`
   @media (max-width: 768px) {
     position: absolute;
     top: 12px;
-    right: 120px;
-    max-width: 180px;
+    right: 170px; // Tăng giá trị này để đẩy xa khỏi User
+    max-width: 150px; // Giảm chiều rộng để tránh chồng lấn
     margin-right: 0;
   }
   
+  @media (max-width: 576px) {
+    right: 150px;
+    max-width: 120px;
+  }
+  
   @media (max-width: 480px) {
-    display: none;
+    display: none; // Ẩn trên mobile nhỏ và sử dụng SearchIconButton thay thế
   }
 `;
 
@@ -414,7 +427,7 @@ export const SearchIconButton = styled.div`
     justify-content: center;
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 110px; // Tăng khoảng cách với User
     width: 36px;
     height: 36px;
     border-radius: 50%;
