@@ -15,7 +15,7 @@ function MovieDetailPage() {
     const [comments, setComments] = useState([])
     const id = params.movieId;
     useEffect(() => {
-          const socket = new SockJS('http://localhost:8081/ws'); // Kết nối WebSocket
+          const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
           const stompClient = new Client({
               webSocketFactory: () => socket,
               debug: (str) => console.log('WebSocket Log:', str), // Log WebSocket events

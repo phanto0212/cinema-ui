@@ -53,37 +53,37 @@ useEffect(()=>{
   fetchRate(idParams)
 },[idParams]);
 useEffect(() => {
-  // const timeout = setTimeout(() => {
-  //   const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
+  const timeout = setTimeout(() => {
+    const socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
 
-  //   const stompClient = new Client({
-  //     webSocketFactory: () => socket,
-  //     debug: (str) => console.log(str), // Log WebSocket events
-  //   });
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str), // Log WebSocket events
+    });
 
-  //   stompClient.onConnect = () => {
-  //     console.log(`Connected to WebSocket for movie ${idParams}`);
+    stompClient.onConnect = () => {
+      console.log(`Connected to WebSocket for movie ${idParams}`);
 
-  //     // Subscribe đến topic `/topic/movie/{idParams}`
-  //     stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
-  //       setChangeBook(prev => prev + 1); // Cập nhật trạng thái khi có thay đổi
-  //     });
-  //   };
+      // Subscribe đến topic `/topic/movie/{idParams}`
+      stompClient.subscribe(`/topic/movie/${idParams}`, (message) => {
+        setChangeBook(prev => prev + 1); // Cập nhật trạng thái khi có thay đổi
+      });
+    };
 
-  //   stompClient.onStompError = (frame) => {
-  //     console.error('STOMP Error:', frame);
-  //   };
+    stompClient.onStompError = (frame) => {
+      console.error('STOMP Error:', frame);
+    };
 
-  //   stompClient.activate(); // Kích hoạt kết nối
+    stompClient.activate(); // Kích hoạt kết nối
 
-  //   // Cleanup khi component bị unmount
-  //   return () => {
-  //     stompClient.deactivate();
-  //   };
-  // }, 100); // delay 100ms
+    // Cleanup khi component bị unmount
+    return () => {
+      stompClient.deactivate();
+    };
+  }, 100); // delay 100ms
 
-  // // Cleanup nếu component unmount trước timeout
-  // return () => clearTimeout(timeout);
+  // Cleanup nếu component unmount trước timeout
+  return () => clearTimeout(timeout);
 }, [idParams]);
 
   const handleTheaterSelect = (id) => {
