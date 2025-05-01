@@ -196,9 +196,23 @@ export const Seating = styled.div`
   align-items: center;
   width: 100%;
   overflow-x: auto;
+  padding-bottom: 15px;
+  -webkit-overflow-scrolling: touch;
   
   @media (max-width: 768px) {
-    padding: 0 5px;
+    padding: 0 5px 15px;
+  }
+  
+  @media (max-width: 480px) {
+    /* Thêm chỉ dẫn trực quan */
+    &::after {
+      content: '← Cuộn để xem tất cả →';
+      display: block;
+      text-align: center;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
   }
 `;
 
@@ -277,6 +291,10 @@ export const Container2 = styled.div`
   text-align: center;
   margin-top: 100px;
   
+  @media (max-width: 1024px) {
+    margin-top: 80px;
+  }
+  
   @media (max-width: 768px) {
     margin-top: 50px;
   }
@@ -306,11 +324,19 @@ export const DateSelection = styled.div`
   margin-bottom: 1.5em;
   overflow-x: auto;
   padding: 10px 0;
+  -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS */
+  
+  /* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   
   @media (max-width: 768px) {
     gap: 0.5em;
     justify-content: flex-start;
-    padding-left: 10px;
+    padding: 10px 5px;
   }
 `;
 
@@ -522,6 +548,7 @@ export const TicketBox = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     padding: 15px;
+    max-width: 500px; /* Giới hạn chiều rộng tối đa */
   }
 `;
 
@@ -562,8 +589,8 @@ export const QuantityContainer = styled.div`
 `;
 
 export const QuantityButton = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   font-size: 1.2rem;
   font-weight: bold;
   background-color: #64648a;
@@ -576,10 +603,14 @@ export const QuantityButton = styled.button`
     background-color: #4d4d73;
   }
   
+  &:active {
+    transform: scale(0.95);
+  }
+  
   @media (max-width: 480px) {
-    width: 28px;
-    height: 28px;
-    font-size: 1.1rem;
+    width: 40px; /* Tăng kích thước để dễ bấm trên mobile */
+    height: 40px;
+    font-size: 1.4rem;
   }
 `;
 

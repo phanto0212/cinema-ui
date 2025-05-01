@@ -8,6 +8,28 @@ import Comments from '../../components/CommentCoponent/CommentComponent'
 import CommentsList from '../../components/CommentLists/ComponentList'
 import SockJS from 'sockjs-client';
 import { Client, Stomp } from '@stomp/stompjs';
+import styled from 'styled-components';
+
+// Thêm component này ở đầu file
+const ResponsiveContainer = styled.div`
+  padding: 0 120px;
+  background-color: #292e5d;
+  min-height: 100vh;
+  margin-top: 91.5px;
+  
+  @media (max-width: 1024px) {
+    padding: 0 60px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 15px;
+    margin-top: 70px;
+  }
+`;
 function MovieDetailPage() {
     const [movie, setMovie] = useState([])
     const params = useParams()
@@ -76,13 +98,13 @@ function MovieDetailPage() {
     <Snowfall/>
     <div >
         <HeaderComponent/>
-        <div style={{padding: '0 120px', backgroundColor: '#292e5d',height: '9000px', marginTop: '91.5px' }}>
+        <ResponsiveContainer>
           <MovieDetailComponent movie={movie} idParams={id}/>
           <div style={{marginTop: '300px'}}>
             <Comments movie_id = {id} />
             <CommentsList changeComment={changeComment} comments={comments} />
           </div>
-        </div>
+        </ResponsiveContainer>
     </div>
     </>
   )

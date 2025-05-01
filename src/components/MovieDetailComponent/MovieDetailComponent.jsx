@@ -31,15 +31,14 @@ const ResponsiveRow = styled(Row)`
     
     img {
       width: 100% !important;
-      height: auto !important;
       max-height: 500px !important;
-      object-fit: contain !important;
+      object-fit: cover !important; /* Thay đổi từ contain sang cover */
+      border-radius: 12px !important;
     }
   }
 `;
-
 const ComboContainer = styled.div`
-  margin-bottom: 200px;
+  margin-bottom: 100px; /* Giảm margin bottom */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -47,8 +46,48 @@ const ComboContainer = styled.div`
   flex-wrap: wrap;
   gap: 20px;
   
+  @media (max-width: 1024px) {
+    justify-content: center;
+    gap: 15px;
+  }
+  
   @media (max-width: 768px) {
     justify-content: center;
+    margin-bottom: 60px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+`;
+// Thêm các component styled mới
+const SelectLocationContainer = styled.div`
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+`;
+
+const TheatersContainer = styled.div`
+  max-width: 800px;
+  margin: 60px auto 20px;
+  
+  @media (max-width: 1024px) {
+    max-width: 90%;
+    margin: 40px auto 20px;
+  }
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 30px auto 20px;
   }
 `;
 function MovieDetailComponent({movie, idParams}) {
@@ -438,8 +477,8 @@ useEffect(() => {
         </DateSelection>
 
         {/* Theater Selection */}
-        <div style={{ maxWidth: '800px', margin: '60px 0 20px 250px'}}>
-        <div style={{marginTop: '10px', display: 'flex', flexDirection: 'row', alignItems:'center',justifyContent:'space-between'}}>
+        <TheatersContainer>
+        <SelectLocationContainer>
         <Subtitle>DANH SÁCH RẠP</Subtitle>
         <TheaterSelection>
           <Select name="city" id="city" value={location} onChange={(e)=>setLocation(e.target.value)} >
@@ -453,8 +492,7 @@ useEffect(() => {
           ))}
           </Select>
         </TheaterSelection>
-
-        </div>
+        </SelectLocationContainer>
         {/* Theater Information */}
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         {cinemas.length > 0 ? (cinemas.map((cinema) => (
@@ -487,7 +525,7 @@ useEffect(() => {
             
           </Showtimes>
 
-        </div>
+        </TheatersContainer>
       </Container2>
       {selectedShowtime !== 0 && <ContainerTicket>
       <TitleTicket>CHỌN LOẠI VÉ</TitleTicket>
