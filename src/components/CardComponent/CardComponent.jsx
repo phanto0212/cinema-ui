@@ -81,7 +81,7 @@ function CardComponent({movie, onClick}) {
         <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>{rate == 'chưa có đánh giá nào' ? rate : <>{rate}/10</>}</CardDetail>
         <CardDetail><span style={{ color: '#F3EA28' }}>Thời lượng: </span>{movie.duration}'</CardDetail>
       </Overlay>
-      <NameCardHeader>{movie.title.length > 20 ? `${movie.title.substring(0, 18)}...` : movie.title}</NameCardHeader>
+      <NameCardHeader>{movie.title.length > 20 ? `${movie.title.substring(0, 28)}...` : movie.title}</NameCardHeader>
       <ContainerALl>
         <TrailerContainer onClick={showModal}>
           <img style={{ marginBottom: '4px' }} alt="icon" src="https://cinestar.com.vn/assets/images/icon-play-vid.svg" />

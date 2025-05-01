@@ -112,11 +112,11 @@ export const CardDetail = styled.p`
 `;
 
 export const NameCardHeader = styled.div`
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 400;
   color: #fff;
   z-index: 1;
-  margin: 30px 0 30px 25px;
+  margin: 30px 0 30px 10px;
   
   &:hover {
     color: #F3EA28;
@@ -180,8 +180,55 @@ export const LinkButton = styled.a`
   color: #333;
   z-index: 1; /* Đảm bảo nội dung nằm trên lớp gradient */
   width: 100%;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    font-size: 15px;
+    padding: 10px 15px;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 16px; /* Tăng kích thước font trên mobile để dễ đọc */
+    padding: 12px 16px; /* Tăng padding để vùng touch lớn hơn */
+    letter-spacing: 0.5px; /* Tăng khoảng cách chữ để dễ đọc */
+  }
+  
+  /* Cải thiện khả năng tương tác trên thiết bị touch */
+  @media (hover: none) {
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+  }
 `;
-
+export const TrailerIcon = styled.img`
+  margin-bottom: -2px;
+  width: 30px;
+  height: 30px;
+  transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 5px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+    margin-right: 5px; /* Thêm khoảng cách với chữ */
+  }
+  
+  /* Hiệu ứng hover trên desktop */
+  @media (min-width: 1025px) {
+    ${TrailerContainer}:hover & {
+      transform: scale(1.1);
+    }
+  }
+`;
 export const ContainerButton = styled.div`
   position: relative;
   display: inline-flex;
