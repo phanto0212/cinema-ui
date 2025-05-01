@@ -12,8 +12,8 @@ import FooterTicketInfo from "../FooterTicketInfo/FooterTicketInfo";
 import ComboComponent from "../ComboComponent/ComboComponent";
 import { format, addDays } from "date-fns"; // Thư viện để xử lý ngày tháng
 import newRequest from "../../utils/request";
-// import SockJS from "sockjs-client";
-// import { Client, Stomp} from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { Client, Stomp} from "@stomp/stompjs";
 import MovieApp from "../MovieAppComponent/MovieApp";
 function MovieDetailComponent({movie, idParams}) {
   const [nameCinema, setNameCinema] = useState("")
