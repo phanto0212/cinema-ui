@@ -15,6 +15,42 @@ import newRequest from "../../utils/request";
 import SockJS from "sockjs-client";
 import { Client, Stomp} from "@stomp/stompjs";
 import MovieApp from "../MovieAppComponent/MovieApp";
+import styled from 'styled-components';
+
+// Thêm component này vào phần styled components
+const ResponsiveRow = styled(Row)`
+  @media (max-width: 768px) {
+    flex-direction: column;
+    
+    .ant-col {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-bottom: 30px;
+    }
+    
+    img {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 500px !important;
+      object-fit: contain !important;
+    }
+  }
+`;
+
+const ComboContainer = styled.div`
+  margin-bottom: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
 function MovieDetailComponent({movie, idParams}) {
   const [nameCinema, setNameCinema] = useState("")
   const [totalPrice,setTotalPrice] = useState(0)
@@ -319,7 +355,7 @@ useEffect(() => {
    },[selectedSeats])
   return (
     <div  >
-        <Row style={{position: 'relative', top:'20px'}}>
+        <ResponsiveRow style={{position: 'relative', top:'20px'}}>
           <Col span={10}>
             <img
               alt="Movie Poster"
@@ -380,7 +416,7 @@ useEffect(() => {
           <Col span={0.5}  >
         
           </Col>
-        </Row>
+        </ResponsiveRow>
         
       <Container2>
         
@@ -501,7 +537,7 @@ useEffect(() => {
         ))}
       </Seating>
     </Container>}
-    {selectedShowtime!== 0 && <div style={{marginBottom:'200px', display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'}}>
+    {selectedShowtime!== 0 && <ComboContainer>
     {combos.map((combo, index) => (
   <ComboComponent
     key={index}
@@ -513,7 +549,7 @@ useEffect(() => {
     onQuantityChange={handleQuantityChangeCombo} // Truyền hàm quản lý số lượng
   />
 ))}
-    </div>}
+    </ComboContainer>}
     {selectedTheaterId && <FooterTicketInfo cinemaName={nameCinema} nameMovie={movie.title} amountAdult={adultTicketCount} 
     amountChild={childTicketCount} totalPrice={totalPrice} seats={seats} selectedSeats={selectedSeats} showtime_hour={showtime_hour}
     screen={screen} selectedCombos={selectedCombos} selectedShowtime={selectedShowtime} movie={movie} />  }

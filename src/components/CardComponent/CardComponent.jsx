@@ -17,113 +17,26 @@ import {
 import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/request";
 
-
 function CardComponent({movie, onClick}) {
-  
-  <style>
-
-  </style>
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const playerRef = useRef(null);
-  function CardComponent({ movie, onClick }) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const playerRef = useRef(null);
-  const showModal = () => {
-    setIsModalVisible(true);
-    if (playerRef.current) {
-      playerRef.current.internalPlayer.seekTo(0);
-    }
-  };
+  const [rate, setRate] = useState('chưa có đánh giá nào');
 
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    if (playerRef.current) {
-      playerRef.current.internalPlayer.pauseVideo();
-    }
-  };
-
-  const videoOptions = {
-    width: '100%',
-    height: '100%',
-    playerVars: {
-      autoplay: 1,
-      controls: 0,
-    },
-  };
-
-  // **Quan trọng: Thêm return để trả về JSX**
-  return (
-    <StyledCard
-      hoverable
-      cover={
-        <img
-          onClick={onClick}
-          alt="Movie Poster"
-          src={movie.poster_url}
-          style={{ width: "400px", height: "355px", objectFit: "cover" }}
-        />
+  const fetchRate = async(movieId) => {
+    try {
+      const response = await newRequest.get(`/api/rate/get/rate/${movieId}`);
+      if (response.status == 200 && response.data.rate != 0) {
+        setRate(response.data.rate);
       }
-    >
-      <Overlay onClick={()=> Navigate('/')}>
-        <NameCard>{movie.title}</NameCard>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Thể loại: </span>{movie.kind}</CardDetail>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Tác giả: </span>{movie.director}</CardDetail>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Đánh giá: </span>8,5/10</CardDetail>
-        <CardDetail><span style={{ color: '#F3EA28' }}>Thời lượng: </span>{movie.duration}'</CardDetail>
-      </Overlay>
-      <NameCardHeader>{movie.title.length >23 ? `${movie.title.substring(0, 30)}...` : movie.title}</NameCardHeader>
-      <ContainerALl>
-        <TrailerContainer onClick={showModal}>
-          <img style={{ marginBottom: '4px' }} alt="icon" src="https://cinestar.com.vn/assets/images/icon-play-vid.svg" />
-          <ViewTrailer>Xem Trailer</ViewTrailer>
-        </TrailerContainer>
-        <ContainerButton style={{ backgroundColor: '#ff7401' }}>
-          <LinkButton style={{ color: '#fff' }}>Đặt vé</LinkButton>
-        </ContainerButton>
-      </ContainerALl>
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
-      <ModalCustom
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        centered
-        width={900}
-        height={500}
-        styles={{
-          body: { padding: 0, backgroundColor: 'transparent' },
-          mask: { backgroundColor: 'rgba(0, 0, 0, 0.9)' },
-        }}
-        closeIcon={<CloseOutlined style={{ color: 'red', fontSize: '20px', margin: '0 0 19px 22px' }} />}
-      >
-        <div style={{ width: '100%', height: '450px', backgroundColor: 'transparent' }}>
-          <YouTube
-            videoId={movie.trailer_url}
-            opts={videoOptions}
-            ref={playerRef}
-            style={{ width: '100%', height: '100%', padding: '0' }}
-          />
-        </div>
-      </ModalCustom>
-    </StyledCard>
-  );
-}
-const [rate, setRate] = useState('chưa có đánh giá nào')
-const fetchRate =  async(movieId)=>{
-  try{
-     const reponse = await newRequest.get(`/api/rate/get/rate/${movieId}`)
-     if(reponse.status==200 && reponse.data.rate != 0){
-      setRate(reponse.data.rate)
-     }
-  }
-  catch(error){
-    console.log(error)
-  }
-}
-useEffect(()=>{
-  fetchRate(movie.id)
-},[])
+  useEffect(() => {
+    fetchRate(movie.id);
+  }, []);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -158,7 +71,6 @@ useEffect(()=>{
          onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}}
           alt="Movie Poster"
           src={movie.poster_url}
-          style={{ width: "400px", height: "355px", objectFit: "cover" }}
         />
       }
     >
@@ -176,13 +88,12 @@ useEffect(()=>{
           <ViewTrailer>Xem Trailer</ViewTrailer>
         </TrailerContainer>
         <ContainerButton onClick={()=>{Navigate(`/movie/detail/${movie.id}`)}} style={{ backgroundColor: '#ff7401' }}>
-          <LinkButton   style={{ color: '#fff' }}>Đặt vé</LinkButton>
+          <LinkButton style={{ color: '#fff' }}>Đặt vé</LinkButton>
         </ContainerButton>
       </ContainerALl>
 
       {/* Modal chứa video YouTube */}
       <ModalCustom 
-        
         visible={isModalVisible} 
         onCancel={handleCancel} 
         footer={null} 
@@ -190,17 +101,17 @@ useEffect(()=>{
         width={900}
         height={500}
         styles={{
-          body: { padding: 0, backgroundColor: 'transparent' }, // Làm trong suốt nội dung modal
-          mask: { backgroundColor: 'rgba(0, 0, 0, 0.9)' } // Đặt overlay mờ 50%
+          body: { padding: 0, backgroundColor: 'transparent' },
+          mask: { backgroundColor: 'rgba(0, 0, 0, 0.9)' }
         }}
         closeIcon={<CloseOutlined style={{ color: 'red', fontSize: '20px', margin:'0 0 19px 22px' }} />}
       >
-        <div style={{ width: '100%', height: '450px', backgroundColor: 'transparent' }}> {/* Div chứa video fit modal */}
+        <div style={{ width: '100%', height: '450px', backgroundColor: 'transparent' }}>
           <YouTube 
-            videoId={movie.trailer_url}// Thay VIDEO_ID với ID của video YouTube
+            videoId={movie.trailer_url}
             opts={videoOptions} 
             ref={playerRef} 
-            style={{ width: '100%', height: '100%', padding: '0' }} // Video sẽ tự động fit vào div
+            style={{ width: '100%', height: '100%', padding: '0' }}
           />
         </div>
       </ModalCustom>

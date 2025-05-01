@@ -7,23 +7,39 @@ export const StyledCard = styled(Card)`
   width: 300px;
   overflow: hidden;
   border-radius: 8px;
-  border:none;
-  background-color:#292e5d;
-  // #050912
-//   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border: none;
+  background-color: #292e5d;
   transition: transform 0.3s ease;
-   .ant-card-body {
+  
+  .ant-card-body {
     padding: 0px;
-    
   }
+  
   /* Ảnh phóng to khi hover */
   .ant-card-cover img {
     transition: transform 0.3s ease;
+    width: 100% !important;
+    height: 355px !important;
+    object-fit: cover !important;
   }
-
 
   &:hover .ant-card-cover img {
     transform: scale(1.1);
+  }
+  
+  /* Responsive cho mobile và tablet */
+  @media (max-width: 768px) {
+    width: 100%;
+    
+    .ant-card-cover img {
+      height: 300px !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .ant-card-cover img {
+      height: 250px !important;
+    }
   }
 `;
 
@@ -41,80 +57,131 @@ export const Overlay = styled.div`
   background: rgba(0, 0, 0, 0.7);
   opacity: 0;
   transition: opacity 0.3s ease;
-  
   padding-right: 30px;
-  
   
   /* Hiển thị thông tin khi hover */
   ${StyledCard}:hover & {
     opacity: 1;
   }
+  
+  /* Responsive cho mobile */
+  @media (max-width: 768px) {
+    height: 71%;
+    padding-right: 20px;
+    
+    /* Trên mobile, hiển thị overlay khi tap/touch */
+    ${StyledCard}:active & {
+      opacity: 1;
+    }
+  }
 `;
 
-export const MovieName = styled.div`
+export const MovieName = styled.div``;
 
-`;
 export const NameCard = styled.h2`
-position: relative;
-top: -50px;
-right: -23px;
-font-size:1rem;
-font-weight: 700;
-color: #fff;
-
+  position: relative;
+  top: -50px;
+  right: -23px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  
+  @media (max-width: 480px) {
+    top: -30px;
+    right: -15px;
+    font-size: 0.9rem;
+  }
 `;
+
 export const CardDetail = styled.p`
-position: relative;
-top: -20px;
-right: -23px;
-padding-bottom: 7px;
-font-size: 0.8rem;
-color:#fff;
-margin-right: 20px;
+  position: relative;
+  top: -20px;
+  right: -23px;
+  padding-bottom: 7px;
+  font-size: 0.8rem;
+  color: #fff;
+  margin-right: 20px;
+  
+  @media (max-width: 480px) {
+    top: -15px;
+    right: -15px;
+    padding-bottom: 4px;
+    font-size: 0.7rem;
+    margin-right: 15px;
+  }
 `;
+
 export const NameCardHeader = styled.div`
-font-size: 1.4rem;
-font-weight: 400;
-color: #fff;
-z-index: 1;
-align-item:center;
-margin: 30px 0 30px 25px;
-&:hover{
-color: #F3EA28;
-}
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #fff;
+  z-index: 1;
+  margin: 30px 0 30px 25px;
+  
+  &:hover {
+    color: #F3EA28;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin: 20px 0 20px 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin: 15px 0 15px 15px;
+  }
 `;
+
 export const ContainerALl = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 15px 15px;
+  }
 `;
+
 export const TrailerContainer = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-width: 140px;
-
-
-
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 140px;
+  
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
+
 export const ViewTrailer = styled.a`
-text-decoration: underline;
-font-size: 1.2rem;
-color: #fff;
-margin-left: 4px;
-margin-top: 3px;
+  text-decoration: underline;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-left: 4px;
+  margin-top: 3px;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
+
 export const LinkButton = styled.a`
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
   color: #333;
   z-index: 1; /* Đảm bảo nội dung nằm trên lớp gradient */
+  width: 100%;
 `;
+
 export const ContainerButton = styled.div`
   position: relative;
   display: inline-flex;
@@ -153,6 +220,11 @@ export const ContainerButton = styled.div`
   &:hover ${LinkButton} {
     color: white;
   }
+  
+  @media (max-width: 480px) {
+    width: 100%;
+    margin: 0;
+  }
 `;
 
 export const ModalCustom = styled(Modal)`
@@ -165,5 +237,12 @@ export const ModalCustom = styled(Modal)`
 
   & .ant-modal-mask {
     background-color: rgba(0, 0, 0, 0.5) !important; /* Điều chỉnh độ trong suốt của overlay */
+  }
+  
+  @media (max-width: 768px) {
+    & .ant-modal-content {
+      width: 95% !important;
+      margin: 0 auto;
+    }
   }
 `;
