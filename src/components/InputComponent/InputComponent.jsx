@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Wrapper } from './style';
+import { Search, Wrapper, SearchContainer } from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-function InputComponent() {
+function InputComponent({ fullWidth }) {
   const [searchKey, setSearchKey] = useState('');
   const navigate = useNavigate();
   
@@ -15,23 +15,27 @@ function InputComponent() {
     }
   };
 
+  const handleSearch = () => {
+    if (searchKey.trim()) {
+      navigate(`/movie/search?key=${encodeURIComponent(searchKey.trim())}`);
+    }
+  };
+
   return (
-    <Wrapper>
-      <input
-        placeholder="Tìm phim, rạp"
-        spellCheck={false}
-        value={searchKey}
-        onChange={(e) => setSearchKey(e.target.value)} // Cập nhật giá trị nhập
-        onKeyDown={handleKeyDown} // Lắng nghe sự kiện khi nhấn phím
-      />
-      <Search onClick={() => {
-        if (searchKey.trim()) {
-          navigate(`/movie/search?key=${encodeURIComponent(searchKey.trim())}`);
-        }
-      }}>
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </Search>
-    </Wrapper>
+    <SearchContainer fullWidth={fullWidth}>
+      <Wrapper fullWidth={fullWidth}>
+        <input
+          placeholder="Tìm phim, rạp"
+          spellCheck={false}
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <Search onClick={handleSearch}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
+        </Search>
+      </Wrapper>
+    </SearchContainer>
   );
 }
 

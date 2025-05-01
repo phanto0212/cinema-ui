@@ -9,7 +9,9 @@ import {
   faHome,
   faSignOutAlt,
   faBell,
-  faUserCircle
+  faUserCircle,
+  faSearch,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { 
   Container, 
@@ -26,7 +28,9 @@ import {
   Overlay,
   SearchContainer,
   NotificationBadge,
-  PremiumBadge
+  PremiumBadge,
+  SearchIconButton,
+  MobileSearchOverlay
 } from './style';
 import InputComponent from '../InputComponent/InputComponent';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +41,7 @@ function HeaderComponent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [hasNotifications, setHasNotifications] = useState(false);
 
   // Kiểm tra token và fetch user thông tin
@@ -53,17 +58,31 @@ function HeaderComponent() {
     }
   }, [localStorage.getItem('authToken')]);
 
-  // Đóng menu khi resize màn hình lớn hơn mobile
+  // Đóng menu và search khi resize màn hình lớn hơn mobile
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setMenuOpen(false);
+        setSearchOpen(false);
       }
     };
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Ngăn cuộn trang khi menu hoặc search đang mở
+  useEffect(() => {
+    if (menuOpen || searchOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen, searchOpen]);
 
   const fetchUser = async (token) => {
     try {
@@ -106,6 +125,12 @@ function HeaderComponent() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+    if (searchOpen) setSearchOpen(false);
+  };
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+    if (menuOpen) setMenuOpen(false);
   };
 
   const userMenu = (
@@ -159,6 +184,11 @@ function HeaderComponent() {
             <InputComponent />
           </SearchContainer>
           
+          {/* Icon tìm kiếm cho mobile */}
+          <SearchIconButton onClick={toggleSearch}>
+            <Icon icon={faSearch} />
+          </SearchIconButton>
+          
           {isLoggedIn ? (
             <Dropdown overlay={userMenu} placement="bottomRight">
               <User>
@@ -206,6 +236,14 @@ function HeaderComponent() {
           </div>
         )}
       </MobileMenu>
+      
+      {/* Search Overlay cho Mobile */}
+      <MobileSearchOverlay isOpen={searchOpen}>
+        <div className="search-close-btn" onClick={() => setSearchOpen(false)}>
+          <Icon icon={faTimes} />
+        </div>
+        <InputComponent fullWidth />
+      </MobileSearchOverlay>
     </div>
   );
 }
