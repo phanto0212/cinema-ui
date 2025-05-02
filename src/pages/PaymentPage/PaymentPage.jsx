@@ -567,11 +567,7 @@ const PaymentPage = () => {
       let socket;
       
       const connectWebSocket = () => {
-        const socketUrl = process.env.NODE_ENV === 'development'
-        ? 'http://localhost:8081/ws' // URL WebSocket cho localhost
-        : 'wss://cinema-be-1.onrender.com/ws'; // URL WebSocket cho môi trường production
-    
-      const socket = new SockJS(socketUrl);
+          socket = new SockJS('https://cinema-be-1.onrender.com/ws'); // Kết nối WebSocket
           stompClient = new Client({
               webSocketFactory: () => socket,
               debug: (str) => console.log('WebSocket Log:', str),
