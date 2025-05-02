@@ -563,56 +563,75 @@ const PaymentPage = () => {
     }, [])
 
     useEffect(() => {
-      const socket = new SockJS('wss://cinema-be-1.onrender.com/ws');
-      const stompClient = new Client({
-          webSocketFactory: () => socket,
-          debug: (str) => console.log('WebSocket Log:', str),
-      });
-
-      stompClient.onConnect = () => {
-          console.log(`Connected to WebSocket for ticket ${id}`);
-
-          stompClient.subscribe(`/topic/payment/${id}`, (message) => {
-            const response = message.body;
-
-            if (response === "success") {
-              setHeader('Thanh toán thành công')
-              setMessage('Vé của bạn đã thanh toán thành công! Chúng tôi đã gửi thông tin vé qua email của bạn.')
-              setIsModalOpen(true)
-              setHandleOnClose(() => {
-                return () => {
-                  setIsModalOpen(false);
-                  Navigate(`/my/ticket`);
-                };
-              });
-            } else if (response === "fail") {
-              setHeader('Thanh toán thất bại')
-              setMessage('Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.')
-              setIsModalOpen(true)
-              setHandleOnClose(() => {
-                return () => {
-                  setIsModalOpen(false);
-                  Navigate('/');
-                };
-              });
-            } else {
-              console.warn("Thông báo không xác định:", response);
-            }
+      let stompClient;
+      let socket;
+      
+      const connectWebSocket = () => {
+        const socketUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:8081/ws' // URL WebSocket cho localhost
+        : 'wss://cinema-be-1.onrender.com/ws'; // URL WebSocket cho môi trường production
+    
+      const socket = new SockJS(socketUrl);
+          stompClient = new Client({
+              webSocketFactory: () => socket,
+              debug: (str) => console.log('WebSocket Log:', str),
           });
+  
+          stompClient.onConnect = () => {
+              console.log(`Connected to WebSocket for ticket ${id}`);
+  
+              // Subscribe to the payment topic
+              stompClient.subscribe(`/topic/payment/${id}`, (message) => {
+                  const response = message.body;
+  
+                  if (response === "success") {
+                      setHeader('Thanh toán thành công');
+                      setMessage('Vé của bạn đã thanh toán thành công! Chúng tôi đã gửi thông tin vé qua email của bạn.');
+                      setIsModalOpen(true);
+                      setHandleOnClose(() => {
+                          return () => {
+                              setIsModalOpen(false);
+                              Navigate(`/my/ticket`);
+                          };
+                      });
+                  } else if (response === "fail") {
+                      setHeader('Thanh toán thất bại');
+                      setMessage('Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.');
+                      setIsModalOpen(true);
+                      setHandleOnClose(() => {
+                          return () => {
+                              setIsModalOpen(false);
+                              Navigate('/');
+                          };
+                      });
+                  } else {
+                      console.warn("Thông báo không xác định:", response);
+                  }
+              });
+          };
+  
+          stompClient.onStompError = (frame) => {
+              console.error('STOMP Error:', frame);
+          };
+  
+          stompClient.onDisconnect = () => {
+              console.log('Disconnected from WebSocket');
+              // Tự động kết nối lại sau 5 giây
+              setTimeout(connectWebSocket, 5000); // Sau 5 giây sẽ gọi lại connectWebSocket để thử kết nối lại
+          };
+  
+          stompClient.activate();
       };
-
-      stompClient.onStompError = (frame) => {
-          console.error('STOMP Error:', frame);
-      };
-
-      stompClient.activate();
-
+  
+      connectWebSocket(); // Ban đầu kết nối
+  
+      // Cleanup WebSocket khi component unmount
       return () => {
-          if (stompClient.active) {
+          if (stompClient && stompClient.active) {
               stompClient.deactivate();
           }
       };
-    }, [id, movie.id]);
+  }, [id, movie.id]); // Phụ thuộc vào id và movie.id
     
     const handlePayment = async (price, TicketId, userId) => {
       try {
